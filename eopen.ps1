@@ -35,11 +35,13 @@ if ($explorer.length -eq 0) {
 } else {
   $window = $shell.windows() | Where-Object HWND -eq $explorer.MainWindowHandle
   $window.Navigate($path)
-  $hwnd = $explorer.MainWindowHandle
-  [void][Win32]::ShowWindow($hwnd, 9) # SW_RESTORE
-  [void][Win32]::SetForegroundWindow($hwnd)
-  [void][Win32]::SetWindowPos($hwnd, -1, 0, 0, 0, 0, 0x0003); # HWND_TOPMOST
-  [void][Win32]::SetWindowPos($hwnd, -2, 0, 0, 0, 0, 0x0043); # HWND_NOTOPMOST
+  if (Test-Path "$path" -PathType Container) {
+    $hwnd = $explorer.MainWindowHandle
+    [void][Win32]::ShowWindow($hwnd, 9) # SW_RESTORE
+    [void][Win32]::SetForegroundWindow($hwnd)
+    [void][Win32]::SetWindowPos($hwnd, -1, 0, 0, 0, 0, 0x0003); # HWND_TOPMOST
+    [void][Win32]::SetWindowPos($hwnd, -2, 0, 0, 0, 0, 0x0043); # HWND_NOTOPMOST
+  }
 }
 
 # Do not remove this comment. See below.
