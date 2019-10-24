@@ -10,6 +10,14 @@ Change directory to each other between Terminal and Explorer.
 Usage: ecd
 ```
 
+## Usage
+
+`ewd` - Display linux path of current explorer location.
+
+```
+Usage: ewd
+```
+
 `eopen` - Open the file or change the directory from the terminal via a shell (explorer).
 
 ```
@@ -41,6 +49,7 @@ Define alias refer to the following and type `ecd`.
 
 ```sh
 alias ecd='eval "$(/path/to/ecd.sh)"'
+alias ewd='/path/to/ewd.sh'
 alias eopen='/path/to/eopen.sh'
 ```
 
@@ -48,6 +57,7 @@ alias eopen='/path/to/eopen.sh'
 
 ```sh
 alias ecd 'eval `/path/to/ecd.sh`'
+alias ewd '/path/to/ewd.sh'
 alias eopen '/path/to/eopen.sh'
 ```
 
@@ -55,6 +65,7 @@ alias eopen '/path/to/eopen.sh'
 
 ```sh
 alias ecd='eval (/path/to/ecd.sh)'
+alias ewd='/path/to/ewd.sh'
 alias eopen='/path/to/eopen.sh'
 ```
 
