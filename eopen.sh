@@ -2,7 +2,7 @@
 
 set -eu
 
-VERSION=0.1.0
+VERSION=0.2.0
 
 [ $# -eq 0 ] && set -- .
 
@@ -36,6 +36,7 @@ Usage: eopen [options] [file | directory | uri]
 options:
   -e, --editor      Open the file in text editor ($EOPEN_EDITOR)
   -n, --new         Open the specified directory in new instance of explorer
+      --sudo        Use sudo to write the unowned file
   -v, --version     Display the version
   -h, --help        You're looking at it
 
@@ -48,14 +49,15 @@ HERE
 exit
 }
 
-EDITOR='' NEW=''
+EDITOR='' NEW='' SUDO=''
 
 for arg; do
   case $arg in
-    -e | --editor) EDITOR=1 ;;
-    -n | --new) NEW=1 ;;
-    -h | --help) usage ;;
+    -e | --editor ) EDITOR=1 ;;
+    -n | --new    ) NEW=1 ;;
+         --sudo   ) SUDO=1 ;;
     -v | --version) echo "$VERSION"; exit ;;
+    -h | --help   ) usage ;;
     -?*) abort "unrecognized option '$arg'" ;;
     *) set -- "$@" "$arg"
   esac
@@ -100,4 +102,37 @@ open() {
   fi
 }
 
-open "$@"
+if [ "$SUDO" ]; then
+  [ -f "$1" ] || abort "'$1' is not a file"
+  tmpdir='' tmpfile=''
+
+  cleanup() {
+    if [ -f "$tmpfile" ]; then
+      printf '\n%s\n' "Delete tempfile '$tmpfile'"
+      rm "$tmpfile"
+      [ -d "$tmpdir" ] && rmdir "$tmpdir"
+    fi
+    exit
+  }
+  trap cleanup INT TERM
+
+  tmpdir=$(mktemp -d)
+  orgfile="$1" tmpfile=$tmpdir/${1##*/}
+  cp --preserve=timestamps "$orgfile" "$tmpfile"
+  printf "Copy '$orgfile' to '$tmpfile'\n"
+  shift
+  set -- "$tmpfile" "$@"
+
+  open "$@"
+  printf 'Waiting for the file changes... To stop, press CTRL-C'
+  while true; do
+    sleep 1 ||:
+    if [ "$tmpfile" -nt "$orgfile" ]; then
+      printf '\nThe file changes detected\n'
+      sudo cp "$tmpfile" "$orgfile"
+      printf '%s' "Wrote '$orgfile'"
+    fi
+  done
+else
+  open "$@"
+fi

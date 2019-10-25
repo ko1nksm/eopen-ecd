@@ -4,13 +4,14 @@ Change directory to each other between Terminal and Explorer.
 
 ## Usage
 
+**Note** Require to enable `Launch folder windows in a separete process` in *Explorer* -> *File* -> *Change folder and search options* -> *View* -> *Advanced settings*.
+
 `ecd` - Change the terminal directory to the current explorer location.
 
 ```
 Usage: ecd
 ```
 
-## Usage
 
 `ewd` - Display linux path of current explorer location.
 
@@ -21,21 +22,21 @@ Usage: ewd
 `eopen` - Open the file or change the directory from the terminal via a shell (explorer).
 
 ```
-Usage: eopen [-e | -n] [file | directory | protocol]
+Usage: eopen [options] [file | directory | uri]
 
-examples
-  eopen                     # Open the current directory in explorer.
-  eopen /etc/               # Open the specified directory in explorer.
-  eopen -n /etc/            # Open the specified directory in new instance of explorer.
-  eopen ~/image.jpg         # Open the file in associated application.
-  eopen -e /etc/hosts       # Open the file in text editor ($EOPEN_EDITOR).
-  eopen http://google.com   # Open the url in default browser.
+options:
+  -e, --editor      Open the file in text editor ($EOPEN_EDITOR)
+  -n, --new         Open the specified directory in new instance of explorer
+      --sudo        Use sudo to write the unowned file
+  -v, --version     Display the version
+  -h, --help        You're looking at it
 
-  The path of file or directory allows linux and windows path.
+note:
+  The file or the directory allows linux and windows path.
   (e.g. /etc/hosts, C:/Windows/System32/drivers/etc/hosts)
-```
 
-**Note** Require to enable `Launch folder windows in a separete process` in *Explorer* -> *File* -> *Change folder and search options* -> *View* -> *Advanced settings*.
+  The uri must start with protocol schema. (e.g http:, https:)
+```
 
 ### WSL terminal
 
@@ -87,6 +88,11 @@ function ecd {
   cd (powershell $ewd).TrimEnd("`r?`n")
 }
 ```
+
+## Changelog
+
+* 0.1.0 First version
+* 0.2.0 eopen: Add --sudo option
 
 ## Thanks
 
