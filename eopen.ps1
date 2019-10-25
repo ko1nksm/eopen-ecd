@@ -34,7 +34,12 @@ if ($explorer.length -eq 0) {
   [void]$shell.Open($path)
 } else {
   $window = $shell.windows() | Where-Object HWND -eq $explorer.MainWindowHandle
-  $window.Navigate($path)
+  try {
+    $window.Navigate($path)
+  } catch {
+    [Console]::Error.WriteLine("Unable to open '$path'")
+    exit 1
+  }
   if (Test-Path "$path" -PathType Container) {
     $hwnd = $explorer.MainWindowHandle
     [void][Win32]::ShowWindow($hwnd, 9) # SW_RESTORE
