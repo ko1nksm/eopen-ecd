@@ -2,7 +2,7 @@
 
 set -eu
 
-VERSION=0.2.0
+VERSION=0.2.1
 
 [ $# -eq 0 ] && set -- .
 
