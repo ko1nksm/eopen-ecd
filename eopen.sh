@@ -23,10 +23,13 @@ is_winpath() {
 }
 
 is_protocol() {
-  case ${1%%://*} in
-    *[!0-9a-zA-Z]*) return 1
+  case $1 in (*:*)
+    case ${1%%:*} in (*[!0-9a-zA-Z]*)
+      return 1
+    esac
+    return 0
   esac
-  return 0
+  return 1
 }
 
 usage() {
