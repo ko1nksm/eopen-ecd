@@ -2,9 +2,7 @@
 
 set -eu
 
-VERSION=0.2.1
-
-[ $# -eq 0 ] && set -- .
+VERSION=0.2.2
 
 abort() {
   echo "eopen: $*" >&2
@@ -66,6 +64,8 @@ for arg; do
   esac
   shift
 done
+
+[ $# -eq 0 ] && set -- .
 
 open_editor() {
   if [ ! "${EOPEN_EDITOR:-}" ]; then

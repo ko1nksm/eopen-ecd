@@ -94,6 +94,7 @@ function ecd {
 * 0.1.0 First version
 * 0.2.0 eopen: Add --sudo option
 * 0.2.1 eopen: Bug fix
+* 0.2.2 eopen: Bug fix
 
 ## Thanks
 
