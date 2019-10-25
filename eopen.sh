@@ -99,6 +99,7 @@ open_explorer() {
 
 open() {
   if [ "$EDITOR" ]; then
+    [ -w "$1" ] || echo 'Warning, do not have write permission' >&2
     open_editor "$@"
   else
     open_explorer "$@"
