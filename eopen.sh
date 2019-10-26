@@ -2,7 +2,7 @@
 
 set -eu
 
-VERSION=0.2.2
+VERSION=0.3.0
 
 abort() {
   echo "eopen: $*" >&2
@@ -66,6 +66,12 @@ for arg; do
 done
 
 [ $# -eq 0 ] && set -- .
+
+if [ -e "$1" ]; then
+  link=$(readlink -f $1)
+  shift
+  set -- "$link" "$@"
+fi
 
 open_editor() {
   if [ ! "${EOPEN_EDITOR:-}" ]; then
