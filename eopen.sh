@@ -3,6 +3,7 @@
 set -eu
 
 VERSION=0.3.0
+: "${EOPEN_EDITOR:=notepad.exe}"
 
 abort() {
   echo "eopen: $*" >&2
@@ -74,11 +75,6 @@ if [ -e "$1" ]; then
 fi
 
 open_editor() {
-  if [ ! "${EOPEN_EDITOR:-}" ]; then
-    # shellcheck disable=SC2016
-    abort 'Environment variable $EOPEN_EDITOR is not set'
-  fi
-
   if [ $# -gt 0 ]; then
     winpath=$(wslpath -aw "$1")
     shift
