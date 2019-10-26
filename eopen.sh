@@ -69,7 +69,7 @@ done
 [ $# -eq 0 ] && set -- .
 
 if [ -e "$1" ]; then
-  link=$(readlink -f $1)
+  link=$(readlink -f "$1")
   shift
   set -- "$link" "$@"
 fi
@@ -127,7 +127,7 @@ if [ "$SUDO" ]; then
   tmpdir=$(mktemp -d)
   orgfile="$1" tmpfile=$tmpdir/${1##*/}
   cp --preserve=timestamps "$orgfile" "$tmpfile"
-  printf "Copy '$orgfile' to '$tmpfile'\n"
+  printf "Copy '%s' to '%s'\n" "$orgfile" "$tmpfile"
   shift
   set -- "$tmpfile" "$@"
 
@@ -135,6 +135,7 @@ if [ "$SUDO" ]; then
   printf 'Waiting for the file changes... To stop, press CTRL-C'
   while true; do
     sleep 1 ||:
+    #shellcheck disable=SC2039
     if [ "$tmpfile" -nt "$orgfile" ]; then
       printf '\nThe file changes detected\n'
       sudo cp "$tmpfile" "$orgfile"
