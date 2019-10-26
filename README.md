@@ -96,6 +96,7 @@ function ecd {
 * 0.2.1 eopen: Bug fix
 * 0.2.2 eopen: Bug fix
 * 0.3.0 eopen: Add support symlink
+* 0.4.0 eopen: Set notepad.exe as the default value for EOPEN_EDITOR
 
 ## Thanks
 
