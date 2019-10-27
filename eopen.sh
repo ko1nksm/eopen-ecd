@@ -2,7 +2,7 @@
 
 set -eu
 
-VERSION=0.5.0
+VERSION=0.5.1
 : "${EOPEN_EDITOR:=notepad.exe}"
 
 abort() {
@@ -94,10 +94,7 @@ if [ -e "$1" ]; then
 else
   is_windrive "$1" && set -- "$1\\"
   if is_winpath "$1" || is_wslpath "$1"; then
-    if ! path=$(wslpath -au "$1") 2>/dev/null; then
-      abort "'$origpath': No such file or directory"
-    fi
-    set -- "$path"
+    path=$(wslpath -au "$1") 2>/dev/null && set -- "$path"
   fi
 fi
 
