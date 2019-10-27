@@ -8,7 +8,6 @@ public class Win32 {
   public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
   [DllImport("user32.dll")]
-  [return: MarshalAs(UnmanagedType.Bool)]
   public static extern bool SetForegroundWindow(IntPtr hWnd);
 
   [DllImport("user32.dll")]
@@ -25,7 +24,7 @@ public class Win32 {
 "@
 
 $explorer = Get-Process -Name explorer | Where-Object MainWindowTitle -ne ""
-$type = [type]::GetTypeFromProgID("Shell.Application")
+$type = [Type]::GetTypeFromProgID("Shell.Application")
 $shell = [Activator]::CreateInstance($type)
 if ($explorer.length -eq 0) {
   [void]$shell.Open($path)
