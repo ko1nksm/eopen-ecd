@@ -6,7 +6,7 @@ abort() {
 }
 
 pwsh() {
-  powershell.exe -ExecutionPolicy Unrestricted "$@"
+  powershell.exe -NoProfile -ExecutionPolicy Unrestricted "$@"
 }
 
 ewd() {

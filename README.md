@@ -89,15 +89,6 @@ function ecd {
 }
 ```
 
-## Changelog
-
-* 0.1.0 First version
-* 0.2.0 eopen: Add --sudo option
-* 0.2.1 eopen: Bug fix
-* 0.2.2 eopen: Bug fix
-* 0.3.0 eopen: Add support symlink
-* 0.4.0 eopen: Set notepad.exe as the default value for EOPEN_EDITOR
-
 ## Thanks
 
 [fcd](https://qiita.com/Yuhsak/items/a1f154f14e5ff871b6d2) (macOS version of this. The idea was taken from here).

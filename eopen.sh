@@ -2,21 +2,39 @@
 
 set -eu
 
-VERSION=0.4.0
+VERSION=0.5.0
 : "${EOPEN_EDITOR:=notepad.exe}"
 
 abort() {
-  echo "eopen: $*" >&2
+  printf 'eopen: %s\n' "$*" >&2
   exit 1
 }
 
 pwsh() {
-  powershell.exe -ExecutionPolicy Unrestricted "$@"
+  powershell.exe -NoProfile -ExecutionPolicy Unrestricted "$@" &
+}
+
+shell() {
+  explorer.exe "$@" ||: &
+}
+
+is_windrive() {
+  case $1 in
+    [a-zA-Z]:) return 0
+  esac
+  return 1
 }
 
 is_winpath() {
   case $1 in
     [a-zA-Z]:[\\/]*) return 0
+  esac
+  return 1
+}
+
+is_wslpath() {
+  case $1 in
+    [\\/][\\/]wsl\$[\\/]*) return 0
   esac
   return 1
 }
@@ -67,51 +85,60 @@ for arg; do
 done
 
 [ $# -eq 0 ] && set -- .
+set -- "$1"
+origpath="$1"
 
 if [ -e "$1" ]; then
-  link=$(readlink -f "$1")
-  shift
-  set -- "$link" "$@"
+  path=$(readlink -f "$1")
+  set -- "$path"
+else
+  is_windrive "$1" && set -- "$1\\"
+  if is_winpath "$1" || is_wslpath "$1"; then
+    if ! path=$(wslpath -au "$1") 2>/dev/null; then
+      abort "'$origpath': No such file or directory"
+    fi
+    set -- "$path"
+  fi
 fi
 
 open_editor() {
-  if [ $# -gt 0 ]; then
-    winpath=$(wslpath -aw "$1")
-    shift
-    set -- "$winpath" "$@"
+  if [ -e "$1" ] && [ ! -w "$1" ]; then
+    echo 'Warning, do not have write permission' >&2
   fi
-  "$EOPEN_EDITOR" "$@"
+  path=$(wslpath -aw "$1")
+  "$EOPEN_EDITOR" "$path" > /dev/null &
 }
 
 open_explorer() {
-  if is_winpath "$1"; then
-    set -- "file://$1"
-  elif ! is_protocol "$1"; then
-    [ -e "$1" ] || abort "'$1': No such file or directory"
-    winpath=$(wslpath -aw "$1")
-    shift
-    set -- "$winpath" "$@"
-  fi
-
-  [ "$NEW" ] && set -- -New "$@"
-
+  path=$(wslpath -aw "$1")
   cd "$(dirname "$0")"
-  pwsh ./eopen.ps1 "$@"
+  pwsh ./eopen.ps1 "file://$path"
+}
+
+open_shell() {
+  if is_winpath "$1" || is_protocol "$1"; then
+    path=$1
+  else
+    [ -e "$1" ] || abort "'$origpath': No such file or directory"
+    path=$(wslpath -aw "$1")
+  fi
+  shell "$path"
 }
 
 open() {
   if [ "$EDITOR" ]; then
-    if [ -e "$1" ] && [ ! -w "$1" ]; then
-      echo 'Warning, do not have write permission' >&2
-    fi
     open_editor "$@"
-  else
+  elif [ "$NEW" ]; then
+    open_shell "$@"
+  elif [ -d "$1" ]; then
     open_explorer "$@"
+  else
+    open_shell "$@"
   fi
 }
 
 if [ "$SUDO" ]; then
-  [ -f "$1" ] || abort "'$1' is not a file"
+  [ -f "$1" ] || abort "'$origpath' is not a file"
   tmpdir='' tmpfile=''
 
   cleanup() {
@@ -128,10 +155,10 @@ if [ "$SUDO" ]; then
   orgfile="$1" tmpfile=$tmpdir/${1##*/}
   cp --preserve=timestamps "$orgfile" "$tmpfile"
   printf "Copy '%s' to '%s'\n" "$orgfile" "$tmpfile"
-  shift
-  set -- "$tmpfile" "$@"
+  set -- "$tmpfile"
 
   open "$@"
+
   printf 'Waiting for the file changes... To stop, press CTRL-C'
   while true; do
     sleep 1 ||:
