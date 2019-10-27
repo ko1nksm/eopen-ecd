@@ -1,14 +1,14 @@
-Add-Type -AssemblyName System.Web
-
 $explorer = Get-Process -Name explorer | Where-Object MainWindowTitle -ne ""
 if ($explorer.length -eq 0) {
   [Console]::Error.WriteLine('Explorer is not running. (Is "Launch folder windows in a separete process" enabled?)')
   exit 1
 }
-$type = [type]::GetTypeFromProgID("Shell.Application")
+$type = [Type]::GetTypeFromProgID("Shell.Application")
 $shell = [Activator]::CreateInstance($type)
 $window = $shell.windows() | Where-Object HWND -eq $explorer.MainWindowHandle
-$location = [System.Web.HttpUtility]::UrlDecode($window.LocationURL)
+$location = [Regex]::Replace($window.LocationURL, "%(..)", {
+  ToChar(ToInte32($args.groups[1].value, 16))
+})
 
 if ($location.StartsWith("file:///")) {
   [Console]::Write($location.Substring(8).Replace("/","\"))
