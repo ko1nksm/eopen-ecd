@@ -30,14 +30,14 @@ $shell = [Activator]::CreateInstance($type)
 if ($explorer.length -eq 0) {
   [void]$shell.Open($path)
 } else {
-  $window = $shell.windows() | Where-Object HWND -eq $explorer.MainWindowHandle
+  $hwnd = $explorer.MainWindowHandle
+  $window = $shell.Windows() | Where-Object HWND -eq $hwnd
   try {
     $window.Navigate($path)
   } catch {
     [Console]::Error.WriteLine("Unable to open '$path'")
     exit 1
   }
-  $hwnd = $explorer.MainWindowHandle
   [void][Win32]::ShowWindow($hwnd, 9) # SW_RESTORE
   [void][Win32]::SetForegroundWindow($hwnd)
   [void][Win32]::SetWindowPos($hwnd, -1, 0, 0, 0, 0, 0x0003); # HWND_TOPMOST
