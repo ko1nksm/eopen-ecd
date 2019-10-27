@@ -11,9 +11,9 @@ $window = $shell.windows() | Where-Object HWND -eq $explorer.MainWindowHandle
 $location = [System.Web.HttpUtility]::UrlDecode($window.LocationURL)
 
 if ($location.StartsWith("file:///")) {
-  Write-Host -NoNewline $location.Substring(8).Replace("/","\")
+  [Console]::Write($location.Substring(8).Replace("/","\"))
 } elseif ($location.StartsWith("file://")) {
-  Write-Host -NoNewline $location.Substring(5).Replace("/","\")
+  [Console]::Write($location.Substring(5).Replace("/","\"))
 } else {
   [Console]::Error.WriteLine("Invalid explorer path.")
   exit 1
