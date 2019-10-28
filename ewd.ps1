@@ -7,7 +7,7 @@ $type = [Type]::GetTypeFromProgID("Shell.Application")
 $shell = [Activator]::CreateInstance($type)
 $window = $shell.windows() | Where-Object HWND -eq $explorer.MainWindowHandle
 $location = [Regex]::Replace($window.LocationURL, "%(..)", {
-  ToChar(ToInte32($args.groups[1].value, 16))
+  [convert]::ToChar([convert]::ToInt32($args.groups[1].value, 16))
 })
 
 if ($location.StartsWith("file:///")) {
