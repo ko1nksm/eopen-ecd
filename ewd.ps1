@@ -10,10 +10,15 @@ $location = [Regex]::Replace($window.LocationURL, "%(..)", {
   [convert]::ToChar([convert]::ToInt32($args.groups[1].value, 16))
 })
 
+$path = ""
 if ($location.StartsWith("file:///")) {
-  [Console]::Write($location.Substring(8).Replace("/","\"))
+  $path = $location.Substring(8)
 } elseif ($location.StartsWith("file://")) {
-  [Console]::Write($location.Substring(5).Replace("/","\"))
+  $path = $location.Substring(5)
+}
+
+if ($path -ne "") {
+  [Console]::Write($path.Replace("/","\"), [Text.Encoding]::Unicode)
 } else {
   [Console]::Error.WriteLine("Invalid explorer path.")
   exit 1
