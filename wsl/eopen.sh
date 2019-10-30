@@ -109,7 +109,7 @@ open_editor() {
 open_explorer() {
   path=$(wslpath -aw "$1")
   cd "$(dirname "$0")"
-  pwsh ../pwsh/eopen.ps1 "file://$path"
+  pwsh ../bridge/eopen.ps1 "file://$path"
 }
 
 open_shell() {

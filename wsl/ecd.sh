@@ -12,7 +12,7 @@ pwsh() {
 
 ewd() {
   cd "$(dirname "$0")" || exit 1
-  pwsh ../pwsh/ewd.ps1
+  pwsh ../bridge/ewd.ps1
 }
 
 ewd=$(ewd) || abort

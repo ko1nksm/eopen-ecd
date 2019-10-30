@@ -1,7 +1,7 @@
 @echo off
 
 setlocal
-set ewd="%~dp0..\pwsh\ewd.ps1"
+set ewd="%~dp0..\bridge\ewd.ps1"
 set pwsh=powershell -NoProfile -ExecutionPolicy Unrestricted
 for /f "usebackq tokens=*" %%i IN (`%pwsh% %ewd%`) DO set dir=%%i
 

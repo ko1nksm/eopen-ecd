@@ -1,4 +1,4 @@
-$ewd = "$PSScriptRoot\ewd.ps1"
+$ewd = "$PSScriptRoot\..\bridge\ewd.ps1"
 $path = (powershell -NoProfile -ExecutionPolicy Unrestricted $ewd)
 $dir = [System.IO.Path]::GetDirectoryName($path)
 $file = [System.IO.Path]::GetFileName($path)
