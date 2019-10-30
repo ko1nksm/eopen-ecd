@@ -49,25 +49,25 @@ Define alias refer to the following and type `ecd`.
 `bash`, `zsh`, `ksh` and compatibile shells.
 
 ```sh
-alias ecd='eval "$(/path/to/ecd.sh)"'
-alias ewd='/path/to/ewd.sh'
-alias eopen='/path/to/eopen.sh'
+alias ecd='eval "$(/path/to/wsl/ecd.sh)"'
+alias ewd='/path/to/wsl/ewd.sh'
+alias eopen='/path/to/wsl/eopen.sh'
 ```
 
 #### For tcsh
 
 ```sh
-alias ecd 'eval `/path/to/ecd.sh`'
-alias ewd '/path/to/ewd.sh'
-alias eopen '/path/to/eopen.sh'
+alias ecd 'eval `/path/to/wsl/ecd.sh`'
+alias ewd '/path/to/wsl/ewd.sh'
+alias eopen '/path/to/wsl/eopen.sh'
 ```
 
 #### For fish
 
 ```sh
-alias ecd='eval (/path/to/ecd.sh)'
-alias ewd='/path/to/ewd.sh'
-alias eopen='/path/to/eopen.sh'
+alias ecd='eval (/path/to/wsl/ecd.sh)'
+alias ewd='/path/to/wsl/ewd.sh'
+alias eopen='/path/to/wsl/eopen.sh'
 ```
 
 ### Command prompt
@@ -84,8 +84,7 @@ Add the following code to your profile (Run `notepad $profile` to edit) and type
 
 ```powershell
 function ecd {
-  $ewd = "/path/to/ewd.ps1"
-  cd (powershell $ewd).TrimEnd("`r?`n")
+  . "/path/to/pwsh/ewd.ps1"
 }
 ```
 

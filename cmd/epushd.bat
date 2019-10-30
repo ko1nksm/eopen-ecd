@@ -1,8 +1,9 @@
 @echo off
 
 setlocal
-set ewd=powershell -NoProfile -ExecutionPolicy Unrestricted "%~dp0ewd.ps1"
-for /f "usebackq tokens=*" %%i IN (`%ewd%`) DO set dir=%%i
+set ewd="%~dp0..\pwsh\ewd.ps1"
+set pwsh=powershell -NoProfile -ExecutionPolicy Unrestricted
+for /f "usebackq tokens=*" %%i IN (`%pwsh% %ewd%`) DO set dir=%%i
 
 set /a count=0
 for /d %%i in (%dir%) do set /a count=count+1
@@ -17,6 +18,6 @@ rem Characters that are invalid in the current code page are replaced with '?'.
 rem Therefore, multiple folders may match. So switch the code page temporary.
 for /f "usebackq tokens=*" %%i IN (`chcp`) DO set cp=%%i
 chcp 65001 > NUL
-for /f "usebackq tokens=*" %%i IN (`%ewd%`) DO set dir=%%i
+for /f "usebackq tokens=*" %%i IN (`%pwsh% %ewd%`) DO set dir=%%i
 chcp %cp:*: =% > NUL
 endlocal & pushd %dir% & cd
