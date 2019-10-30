@@ -12,7 +12,6 @@ Change directory to each other between Terminal and Explorer.
 Usage: ecd
 ```
 
-
 `ewd` - Display linux path of current explorer location.
 
 ```
@@ -83,9 +82,7 @@ Type `ecd` (`ecd.bat`) or `epushd` (`epushd.bat`).
 Add the following code to your profile (Run `notepad $profile` to edit) and type `ecd`.
 
 ```powershell
-function ecd {
-  . "/path/to/pwsh/ewd.ps1"
-}
+Set-Alias ecd "/path/to/pwsh/ewd.ps1"
 ```
 
 ## Thanks
