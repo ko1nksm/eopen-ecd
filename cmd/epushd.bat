@@ -1,23 +1,22 @@
 @echo off
 
 setlocal
-set ewd="%~dp0..\bridge\ewd.ps1"
-set pwsh=powershell -NoProfile -ExecutionPolicy Unrestricted
-for /f "usebackq tokens=*" %%i IN (`%pwsh% %ewd%`) DO set dir=%%i
+set ebridge="%~dp0..\bin\ebridge.exe"
+for /f "usebackq tokens=*" %%i IN (`"%ebridge%" pwd auto`) DO set dir=%%i
+if errorlevel 0 exit /b 1
 
 set /a count=0
-for /d %%i in (%dir%) do set /a count=count+1
+for /d %%i in ("%dir%") do set /a count=count+1
 
 if "%count%" == "1" (
-  endlocal & pushd %dir% & cd
+  endlocal & pushd "%dir%" & cd
   exit /b
 )
 
 rem Fallback when matching multiple unicode paths.
 rem Characters that are invalid in the current code page are replaced with '?'.
 rem Therefore, multiple folders may match. So switch the code page temporary.
-for /f "usebackq tokens=*" %%i IN (`chcp`) DO set cp=%%i
-chcp 65001 > NUL
-for /f "usebackq tokens=*" %%i IN (`%pwsh% %ewd%`) DO set dir=%%i
-chcp %cp:*: =% > NUL
+for /f "usebackq tokens=*" %%i IN (`"%ebridge%" chcp 65001`) DO set cp=%%i
+for /f "usebackq tokens=*" %%i IN (`"%ebridge%" pwd`) DO set dir=%%i
+"%ebridge%" chcp %cp% > NUL
 endlocal & pushd %dir% & cd

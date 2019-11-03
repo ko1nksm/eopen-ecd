@@ -1,20 +1,20 @@
 #!/bin/sh
 
+set -eu
+
+ebridge="${0%/*}/../bin/ebridge.exe"
+
 abort() {
   [ $# -gt 0 ] && printf 'ewd: %s\n' "$*" >&2
   exit 1
 }
 
-pwsh() {
-  powershell.exe -NoProfile -ExecutionPolicy Unrestricted "$@"
-}
+ebridge() (
+  cd "${ebridge%/*}" || exit 1
+  "./${ebridge##*/}" "$@"
+)
 
-ewd() {
-  cd "$(dirname "$0")" || exit 1
-  pwsh ../bridge/ewd.ps1
-}
-
-ewd=$(ewd) || abort
+ewd=$(ebridge pwd) || abort
 
 case $ewd in ([A-Za-z]:* | \\\\*)
   if dest=$(wslpath -u "$ewd") 2>/dev/null; then

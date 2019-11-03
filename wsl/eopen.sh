@@ -2,21 +2,17 @@
 
 set -eu
 
-VERSION=0.5.1
-: "${EOPEN_EDITOR:=notepad.exe}"
+ebridge="${0%/*}/../bin/ebridge.exe"
 
 abort() {
   printf 'eopen: %s\n' "$*" >&2
   exit 1
 }
 
-pwsh() {
-  powershell.exe -NoProfile -ExecutionPolicy Unrestricted "$@" &
-}
-
-shell() {
-  explorer.exe "$@" ||: &
-}
+ebridge() (
+  cd "${ebridge%/*}" || exit 1
+  "./${ebridge##*/}" "$@"
+)
 
 is_windrive() {
   case $1 in
@@ -39,9 +35,16 @@ is_wslpath() {
   return 1
 }
 
+is_uncpath() {
+  case $1 in
+    [\\/][\\/]*) return 0
+  esac
+  return 1
+}
+
 is_protocol() {
   case $1 in (*:*)
-    case ${1%%:*} in (*[!0-9a-zA-Z]*)
+    case ${1%%:*} in (*[!0-9a-zA-Z.+-]*)
       return 1
     esac
     return 0
@@ -54,17 +57,18 @@ usage() {
 Usage: eopen [options] [file | directory | uri]
 
 options:
-  -e, --editor      Open the file in text editor ($EOPEN_EDITOR)
+  -e, --editor      Open the file in text editor. Set the editor path to
+                      EOPEN_EDITOR environment variable on Windows
   -n, --new         Open the specified directory in new instance of explorer
-      --sudo        Use sudo to write the unowned file
+      --sudo        Use sudo to edit the unowned file
   -v, --version     Display the version
   -h, --help        You're looking at it
 
 note:
   The file or the directory allows linux and windows path.
-  (e.g. /etc/hosts, C:/Windows/System32/drivers/etc/hosts)
-
-  The uri must start with protocol schema. (e.g http:, https:)
+    e.g. /etc/hosts, C:/Windows/System32/drivers/etc/hosts, \\wsl$\\Ubuntu
+  The uri must start with protocol schema.
+    e.g. http://example.com, https://example.com
 HERE
 exit
 }
@@ -76,7 +80,7 @@ for arg; do
     -e | --editor ) EDITOR=1 ;;
     -n | --new    ) NEW=1 ;;
          --sudo   ) SUDO=1 ;;
-    -v | --version) echo "$VERSION"; exit ;;
+    -v | --version) ebridge version; exit ;;
     -h | --help   ) usage ;;
     -?*) abort "unrecognized option '$arg'" ;;
     *) set -- "$@" "$arg"
@@ -98,40 +102,23 @@ else
   fi
 fi
 
-open_editor() {
-  if [ -e "$1" ] && [ ! -w "$1" ]; then
-    echo 'Warning, do not have write permission' >&2
+main() {
+  if [ "$EDITOR" ]; then
+    if [ -e "$1" ] && [ ! -w "$1" ]; then
+      echo 'Warning, do not have write permission' >&2
+    fi
+    func=edit
+  else
+    [ "$NEW" ] && func=new || func=open
   fi
-  path=$(wslpath -aw "$1")
-  "$EOPEN_EDITOR" "$path" > /dev/null &
-}
 
-open_explorer() {
-  path=$(wslpath -aw "$1")
-  cd "$(dirname "$0")"
-  pwsh ../bridge/eopen.ps1 "file://$path"
-}
-
-open_shell() {
-  if is_winpath "$1" || is_protocol "$1"; then
+  if is_winpath "$1" || is_protocol "$1" || is_uncpath "$1"; then
     path=$1
   else
-    [ -e "$1" ] || abort "'$origpath': No such file or directory"
     path=$(wslpath -aw "$1")
   fi
-  shell "$path"
-}
 
-open() {
-  if [ "$EDITOR" ]; then
-    open_editor "$@"
-  elif [ "$NEW" ]; then
-    open_shell "$@"
-  elif [ -d "$1" ]; then
-    open_explorer "$@"
-  else
-    open_shell "$@"
-  fi
+  ebridge "$func" "$path"
 }
 
 if [ "$SUDO" ]; then
@@ -146,7 +133,7 @@ if [ "$SUDO" ]; then
     fi
     exit
   }
-  trap cleanup INT TERM
+  trap cleanup INT TERM EXIT
 
   tmpdir=$(mktemp -d)
   orgfile="$1" tmpfile=$tmpdir/${1##*/}
@@ -154,7 +141,7 @@ if [ "$SUDO" ]; then
   printf "Copy '%s' to '%s'\n" "$orgfile" "$tmpfile"
   set -- "$tmpfile"
 
-  open "$@"
+  main "$@"
 
   printf 'Waiting for the file changes... To stop, press CTRL-C'
   while true; do
@@ -167,5 +154,5 @@ if [ "$SUDO" ]; then
     fi
   done
 else
-  open "$@"
+  main "$@"
 fi

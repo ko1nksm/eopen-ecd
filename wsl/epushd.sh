@@ -6,7 +6,7 @@ ebridge="${0%/*}/../bin/ebridge.exe"
 
 abort() {
   if [ $# -gt 0 ]; then
-    printf '%s\n' "printf 'ecd: %s' '$*' >/dev/stderr; echo >/dev/stderr"
+    printf '%s\n' "printf 'epushd: %s' '$*' >/dev/stderr; echo >/dev/stderr"
   fi
   echo false
   exit 1
@@ -22,7 +22,7 @@ ewd=$(ebridge pwd) || abort
 case $ewd in ([A-Za-z]:* | \\\\*)
   if dest=$(wslpath -u "$ewd") 2>/dev/null; then
     # shellcheck disable=SC2028
-    echo "cd \"$dest\"; printf '%s' \"$dest\"; echo"
+    echo "pushd \"$dest\"; echo"
     exit
   fi
 esac

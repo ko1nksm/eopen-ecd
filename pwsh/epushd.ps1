@@ -8,7 +8,7 @@ try {
   $file = [System.IO.Path]::GetFileName($path)
   $dirs = [System.IO.Directory]::GetDirectories($dir, $file)
   if ($dirs.length -eq 1) {
-    Set-Location $path
+    Push-Location $path
     [Console]::WriteLine($path)
   } else {
     # Fallback when matching multiple unicode paths.
@@ -17,7 +17,7 @@ try {
     $encode = [Console]::OutputEncoding
     [Console]::OutputEncoding = [Text.Encoding]::UTF8
     $path = (& "$ebridge" pwd)
-    Set-Location $path
+    Push-Location $path
     [Console]::WriteLine($path)
     [Console]::OutputEncoding = $encode
   }
