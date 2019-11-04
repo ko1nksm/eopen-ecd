@@ -1,6 +1,6 @@
 ﻿#include "explorer.h"
-#include "path.h"
-#include "error.h"
+#include "util.h"
+#include "winapi.h"
 
 namespace ebridge {
 	Explorer::Explorer() : Explorer(nullptr) {}
@@ -18,7 +18,7 @@ namespace ebridge {
 	{
 		BSTR url;
 		window->get_LocationURL(&url);
-		return UriToPath(url);
+		return winapi::uri2path(url);
 	}
 
 	void Explorer::Open(std::wstring path)
@@ -28,7 +28,7 @@ namespace ebridge {
 		}
 		catch (const _com_error & e) {
 			if (e.Error() == HRESULT_FROM_WIN32(ERROR_CANCELLED)) {
-				throw silent_error();
+				throw util::silent_error();
 			}
 			throw e;
 		}

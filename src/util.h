@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <iostream>
 
-namespace ebridge {
+namespace util {
+	class silent_error {};
+
 	std::wstring getenv(std::wstring name, std::wstring default_value = L"");
 }

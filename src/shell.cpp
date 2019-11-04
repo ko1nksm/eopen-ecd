@@ -4,12 +4,10 @@
 #include <regex>
 #include <fstream>
 #include <filesystem>
-#include "shell.h"
-#include "explorer.h"
-#include "path.h"
-#include "error.h"
-#include "window.h"
-#include "env.h"
+#include "Shell.h"
+#include "Explorer.h"
+#include "util.h"
+#include "winapi.h"
 #import "SHELL32.dll" rename("ShellExecute", "_ShellExecute")
 
 namespace ebridge {
@@ -25,7 +23,7 @@ namespace ebridge {
 	std::wstring NormalizePath(std::wstring path) {
 		// URI (file:)
 		if (std::regex_match(path, std::wregex(L"file:.*"))) {
-			path = UriToPath(path);
+			path = winapi::uri2path(path);
 		}
 
 		// Absolute Path with a drive letter
@@ -70,7 +68,7 @@ namespace ebridge {
 		// Absolute path or UNC with path
 		try {
 			if (!std::filesystem::exists(path)) {
-				throw win32_error(ERROR_PATH_NOT_FOUND);
+				throw winapi::win32_error(ERROR_PATH_NOT_FOUND);
 			}
 		}
 		catch (const std::filesystem::filesystem_error & e) {
@@ -80,7 +78,7 @@ namespace ebridge {
 				// Provides an opportunity for authentication for CIFS access.
 				break;
 			default:
-				throw win32_error(code);
+				throw winapi::win32_error(code);
 			}
 		}
 		return path;
@@ -95,7 +93,7 @@ namespace ebridge {
 
 		do {
 			if (wcscmp(process.szExeFile, L"explorer.exe") != 0) continue;
-			HWND hwnd = GetMainWindowHandle(process.th32ProcessID);
+			HWND hwnd = (HWND)LongToHandle(winapi::get_main_window_handle(process.th32ProcessID));
 			if (::GetWindowTextLength(hwnd) > 0) {
 				CloseHandle(handle);
 				return process.th32ProcessID;
@@ -113,7 +111,7 @@ namespace ebridge {
 		const DWORD pid = GetActiveExplorerPID();
 		if (pid == 0) return Explorer();
 
-		const HWND mainWindowHandle = GetMainWindowHandle(pid);
+		HWND mainWindowHandle = (HWND)LongToHandle(winapi::get_main_window_handle(pid));
 		if (mainWindowHandle == NULL) return Explorer();
 
 		const long count = shellWindows->GetCount();
@@ -154,43 +152,28 @@ namespace ebridge {
 			if (!std::filesystem::is_directory(path)) return;
 		}
 		catch (...) {} // Ignoring this error will not be a serious problem
-		ForegroundWindow(window.GetHWND());
+		winapi::set_foreground_window(HandleToLong(window.GetHWND()));
 	}
 
 	void Shell::New(std::wstring path, std::wstring flags) {
 		path = AccessCheck(NormalizePath(path));
-
-		SHELLEXECUTEINFO sei = { 0 };
-		sei.cbSize = sizeof(SHELLEXECUTEINFO);
-		sei.lpVerb = L"open";
-		sei.lpFile = L"explorer.exe";
-		sei.lpParameters = path.c_str();
 		if (flags.find(L"b") == std::string::npos) {
-			sei.nShow = SW_SHOWNORMAL;
-		} 
-		else {
-			sei.nShow = SW_SHOWNOACTIVATE;
+			winapi::execute(L"explorer.exe", path, winapi::show::normal);
 		}
-		sei.fMask = NULL;
-		::ShellExecuteEx(&sei);
+		else {
+			winapi::execute(L"explorer.exe", path, winapi::show::noactive);
+		}
 	}
 
 	void Shell::Edit(std::wstring path, std::wstring flags)
 	{
-		std::wstring editor = getenv(L"EOPEN_EDITOR", L"notepad.exe");
+		std::wstring editor = util::getenv(L"EOPEN_EDITOR", L"notepad.exe");
 		path = AccessCheck(NormalizePath(path));
-		SHELLEXECUTEINFO sei = { 0 };
-		sei.cbSize = sizeof(SHELLEXECUTEINFO);
-		sei.lpVerb = L"open";
-		sei.lpFile = editor.c_str();
-		sei.lpParameters = path.c_str();
 		if (flags.find(L"b") == std::string::npos) {
-			sei.nShow = SW_SHOWNORMAL;
+			winapi::execute(editor, path, winapi::show::normal);
 		}
 		else {
-			sei.nShow = SW_SHOWNOACTIVATE;
+			winapi::execute(editor, path, winapi::show::noactive);
 		}
-		sei.fMask = NULL;
-		::ShellExecuteEx(&sei);
 	}
 }

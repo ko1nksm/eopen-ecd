@@ -252,23 +252,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ebridge.cpp" />
-    <ClCompile Include="env.cpp" />
-    <ClCompile Include="error.cpp" />
-    <ClCompile Include="explorer.cpp" />
-    <ClCompile Include="encode.cpp" />
-    <ClCompile Include="path.cpp" />
-    <ClCompile Include="shell.cpp" />
-    <ClCompile Include="window.cpp" />
+    <ClCompile Include="util.cpp" />
+    <ClCompile Include="Explorer.cpp" />
+    <ClCompile Include="Shell.cpp" />
+    <ClCompile Include="winapi.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="env.h" />
-    <ClInclude Include="error.h" />
-    <ClInclude Include="explorer.h" />
-    <ClInclude Include="encode.h" />
+    <ClInclude Include="util.h" />
+    <ClInclude Include="Explorer.h" />
     <ClInclude Include="version.h" />
-    <ClInclude Include="window.h" />
-    <ClInclude Include="path.h" />
-    <ClInclude Include="shell.h" />
+    <ClInclude Include="winapi.h" />
+    <ClInclude Include="Shell.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

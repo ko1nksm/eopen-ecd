@@ -1,6 +1,6 @@
-﻿#include "env.h"
+﻿#include "util.h"
 
-std::wstring ebridge::getenv(std::wstring name, std::wstring default_value)
+std::wstring util::getenv(std::wstring name, std::wstring default_value)
 {
 	wchar_t* buf = nullptr;
 	std::wstring ret;

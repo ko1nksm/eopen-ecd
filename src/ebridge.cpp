@@ -1,15 +1,13 @@
 ﻿#include <comdef.h>
 #include <fcntl.h>
 #include <io.h>
-#include <windows.h>
-#include <winerror.h>
 #include <iostream>
 #include <string>
 #include <filesystem>
 #include "shell.h"
-#include "error.h"
-#include "encode.h"
+#include "util.h"
 #include "version.h"
+#include "winapi.h"
 
 using namespace ebridge;
 
@@ -65,7 +63,7 @@ int do_pwd(std::wstring codepage) {
 
 	// Replace to "?" from invalid character in the specified codepage. 
 	setmode(_O_TEXT);
-	std::cout << wide2multi(dir, cp);
+	std::cout << winapi::wide2multi(dir, cp);
 	return 0;
 }
 
@@ -76,13 +74,13 @@ int do_chcp(std::wstring codepage) {
 		cp = std::stoi(codepage);
 	}
 	catch (...) {
-		throw ebridge::win32_error(ERROR_INVALID_PARAMETER);
+		throw winapi::win32_error(ERROR_INVALID_PARAMETER);
 	}
 
 	UINT current_cp = ::GetConsoleOutputCP();
 	if (cp != 0 && cp != current_cp) {
 		if (::SetConsoleOutputCP(cp) == 0) {
-			throw ebridge::win32_error(GetLastError());
+			throw winapi::win32_error(GetLastError());
 		}
 	}
 	std::wcout << current_cp;
@@ -134,12 +132,12 @@ int process(int argc, wchar_t* argv[]) {
 			return 0;
 		}
 
-		throw ebridge::win32_error(ERROR_INVALID_FUNCTION);
+		throw winapi::win32_error(ERROR_INVALID_FUNCTION);
 	}
-	catch (ebridge::win32_error & e) {
+	catch (winapi::win32_error & e) {
 		std::wcerr << e.message() << std::endl;
 	}
-	catch (ebridge::silent_error) {
+	catch (util::silent_error) {
 		// do not display anything
 	}
 	catch (const _com_error & e) {
@@ -147,12 +145,12 @@ int process(int argc, wchar_t* argv[]) {
 	}
 	catch (std::runtime_error & e) {
 		UINT cp = ::GetConsoleOutputCP();
-		std::wcerr << multi2wide(e.what(), cp) << std::endl;
+		std::wcerr << winapi::multi2wide(e.what(), cp) << std::endl;
 	}
 	catch (std::exception & e) {
 		std::wcerr << L"An unexpected exception occurred: ";
 		UINT cp = ::GetConsoleOutputCP();
-		std::wcerr << multi2wide(e.what(), cp) << std::endl;
+		std::wcerr << winapi::multi2wide(e.what(), cp) << std::endl;
 	}
 	catch (...) {
 		std::wcerr << L"An unexpected error occurred" << std::endl;
