@@ -25,21 +25,21 @@ int do_usage(std::wstring prog) {
 	return 0;
 }
 
-int do_open(std::wstring path) {
+int do_open(std::wstring path, std::wstring flags) {
 	Shell shell;
-	shell.Open(path);
+	shell.Open(path, flags);
 	return 0;
 }
 
-int do_new(std::wstring path) {
+int do_new(std::wstring path, std::wstring flags) {
 	Shell shell;
-	shell.New(path);
+	shell.New(path, flags);
 	return 0;
 }
 
-int do_edit(std::wstring path) {
+int do_edit(std::wstring path, std::wstring flags) {
 	Shell shell;
-	shell.Edit(path);
+	shell.Edit(path, flags);
 	return 0;
 }
 
@@ -103,17 +103,20 @@ int process(int argc, wchar_t* argv[]) {
 	try {
 		if (wcscmp(argv[1], L"open") == 0) {
 			std::wstring path = (argc > 2) ? argv[2] : L".";
-			return do_open(path);
+			std::wstring flags = (argc > 3) ? argv[3] : L"";
+			return do_open(path, flags);
 		}
 
 		if (wcscmp(argv[1], L"new") == 0) {
 			std::wstring path = (argc > 2) ? argv[2] : L".";
-			return do_new(path);
+			std::wstring flags = (argc > 3) ? argv[3] : L"";
+			return do_new(path, flags);
 		}
 
 		if (wcscmp(argv[1], L"edit") == 0) {
 			std::wstring path = (argc > 2) ? argv[2] : L".";
-			return do_edit(path);
+			std::wstring flags = (argc > 3) ? argv[3] : L"";
+			return do_edit(path, flags);
 		}
 
 		if (wcscmp(argv[1], L"pwd") == 0) {

@@ -58,11 +58,12 @@ Usage: eopen [options] [file | directory | uri]
 
 options:
   -e, --editor      Open the file in text editor. Set the editor path to
-                      EOPEN_EDITOR environment variable on Windows
-  -n, --new         Open the specified directory in new instance of explorer
-      --sudo        Use sudo to edit the unowned file
-  -v, --version     Display the version
-  -h, --help        You're looking at it
+                      EOPEN_EDITOR environment variable on Windows.
+  -n, --new         Open the specified directory in new instance of explorer.
+      --sudo        Use sudo to edit the unowned file.
+  -g, --background  Does not bring the application to the foreground.
+  -v, --version     Display the version.
+  -h, --help        You're looking at it.
 
 note:
   The file or the directory allows linux and windows path.
@@ -73,15 +74,16 @@ HERE
 exit
 }
 
-EDITOR='' NEW='' SUDO=''
+EDITOR='' NEW='' SUDO='' FLAGS=''
 
 for arg; do
   case $arg in
-    -e | --editor ) EDITOR=1 ;;
-    -n | --new    ) NEW=1 ;;
-         --sudo   ) SUDO=1 ;;
-    -v | --version) ebridge version; exit ;;
-    -h | --help   ) usage ;;
+    -e | --editor    ) EDITOR=1 ;;
+    -n | --new       ) NEW=1 ;;
+         --sudo      ) SUDO=1 ;;
+    -g | --background) FLAGS="${FLAGS}b" ;;
+    -v | --version   ) ebridge version; exit ;;
+    -h | --help      ) usage ;;
     -?*) abort "unrecognized option '$arg'" ;;
     *) set -- "$@" "$arg"
   esac
@@ -118,7 +120,7 @@ main() {
     path=$(wslpath -aw "$1")
   fi
 
-  ebridge "$func" "$path"
+  ebridge "$func" "$path" "$FLAGS"
 }
 
 if [ "$SUDO" ]; then

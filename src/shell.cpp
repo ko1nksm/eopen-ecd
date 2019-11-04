@@ -139,16 +139,17 @@ namespace ebridge {
 		return window.GetPath();
 	}
 
-	void Shell::Open(std::wstring path) {
+	void Shell::Open(std::wstring path, std::wstring flags) {
 		Explorer window = GetActiveExplorer();
 
 		if (!window.Exists()) {
-			New(path);
+			New(path, flags);
 			return;
 		}
 
 		path = AccessCheck(NormalizePath(path));
 		window.Open(path);
+		if (flags.find(L"b") != std::string::npos) return;
 		try {
 			if (!std::filesystem::is_directory(path)) return;
 		}
@@ -156,19 +157,25 @@ namespace ebridge {
 		ForegroundWindow(window.GetHWND());
 	}
 
-	void Shell::New(std::wstring path) {
+	void Shell::New(std::wstring path, std::wstring flags) {
 		path = AccessCheck(NormalizePath(path));
 
 		SHELLEXECUTEINFO sei = { 0 };
 		sei.cbSize = sizeof(SHELLEXECUTEINFO);
 		sei.lpVerb = L"open";
-		sei.lpFile = path.c_str();
-		sei.nShow = SW_SHOWNORMAL;
+		sei.lpFile = L"explorer.exe";
+		sei.lpParameters = path.c_str();
+		if (flags.find(L"b") == std::string::npos) {
+			sei.nShow = SW_SHOWNORMAL;
+		} 
+		else {
+			sei.nShow = SW_SHOWNOACTIVATE;
+		}
 		sei.fMask = NULL;
 		::ShellExecuteEx(&sei);
 	}
 
-	void Shell::Edit(std::wstring path)
+	void Shell::Edit(std::wstring path, std::wstring flags)
 	{
 		std::wstring editor = getenv(L"EOPEN_EDITOR", L"notepad.exe");
 		path = AccessCheck(NormalizePath(path));
@@ -177,7 +184,12 @@ namespace ebridge {
 		sei.lpVerb = L"open";
 		sei.lpFile = editor.c_str();
 		sei.lpParameters = path.c_str();
-		sei.nShow = SW_SHOWNORMAL;
+		if (flags.find(L"b") == std::string::npos) {
+			sei.nShow = SW_SHOWNORMAL;
+		}
+		else {
+			sei.nShow = SW_SHOWNOACTIVATE;
+		}
 		sei.fMask = NULL;
 		::ShellExecuteEx(&sei);
 	}
