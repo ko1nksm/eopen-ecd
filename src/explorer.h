@@ -11,7 +11,7 @@ namespace ebridge {
 		bool Exists();
 		std::wstring GetPath();
 		void Open(std::wstring path);
-		HWND GetHWND();
+		long GetHandle();
 
 	private:
 		SHDocVw::IWebBrowser2Ptr window;

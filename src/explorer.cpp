@@ -35,10 +35,10 @@ namespace ebridge {
 
 	}
 
-	HWND Explorer::GetHWND()
+	long Explorer::GetHandle()
 	{
 		HWND hwnd;
-		window->get_HWND((long*)&hwnd);
-		return hwnd;
+		window->get_HWND((long *)&hwnd);
+		return HandleToLong(hwnd);
 	}
 }

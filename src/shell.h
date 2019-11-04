@@ -6,8 +6,8 @@ namespace ebridge {
 	{
 	public:
 		std::wstring GetWorkingDirectory();
-		void Open(std::wstring path, std::wstring flags);
-		void New(std::wstring path, std::wstring flags);
-		void Edit(std::wstring path, std::wstring flags);
+		void Open(std::wstring path, bool background = false);
+		void New(std::wstring path, bool background = false);
+		void Edit(std::wstring path, bool background = false);
 	};
 }
