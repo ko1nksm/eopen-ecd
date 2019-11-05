@@ -98,6 +98,11 @@ if [ -e "$1" ]; then
   path=$(readlink -f "$1")
   set -- "$path"
 else
+  case $1 in "~~" | "~~/"* |  "~~\\"*)
+    whome=$(ebridge env USERPROFILE)
+    set -- "$whome${1#~~}"
+  esac
+
   is_windrive "$1" && set -- "$1\\"
   if is_winpath "$1" || is_wslpath "$1"; then
     path=$(wslpath -au "$1") 2>/dev/null && set -- "$path"
