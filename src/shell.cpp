@@ -120,12 +120,16 @@ namespace ebridge {
 
 		AccessCheck(NormalizePath(path));
 		window.Open(path);
-		if (background) return;
 		try {
 			if (!std::filesystem::is_directory(path)) return;
 		}
 		catch (...) {} // Ignoring this error will not be a serious problem
-		winapi::bring_window_to_top(window.GetHandle());
+		if (background) {
+			winapi::show_window(window.GetHandle());
+		}
+		else {
+			winapi::active_window(window.GetHandle());
+		}
 	}
 
 	void Shell::New(std::wstring path, bool background) {

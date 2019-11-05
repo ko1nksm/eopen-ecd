@@ -40,7 +40,15 @@ namespace winapi {
 		::ShellExecuteEx(&sei);
 	}
 
-	void bring_window_to_top(long handle)
+	void show_window(long handle)
+	{
+		auto hwnd = (HWND)LongToHandle(handle);
+		::ShowWindow(hwnd, SW_SHOWNOACTIVATE);
+		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+	}
+
+	void active_window(long handle)
 	{
 		auto hwnd = (HWND)LongToHandle(handle);
 		::ShowWindow(hwnd, SW_RESTORE);

@@ -16,7 +16,8 @@ namespace winapi {
 
 	void execute(std::wstring exec, std::wstring parameters, show show);
 
-	void bring_window_to_top(long handle);
+	void show_window(long handle);
+	void active_window(long handle);
 	long get_main_window_handle(const long pid);
 
 	std::string wide2multi(std::wstring const& str, unsigned int codepage);
