@@ -86,6 +86,12 @@ int do_chcp(std::vector<std::wstring> params) {
 	return 0;
 }
 
+int do_env(std::vector<std::wstring> params) {
+	std::wstring name = params.size() >= 1 ? params[0] : L"";
+	std::wcout << util::getenv(name);
+	return 0;
+}
+
 int do_version() {
 	std::wcout << VERSION << std::endl;
 	return 0;
@@ -108,6 +114,7 @@ int process(int argc, wchar_t* argv[]) {
 		if (func == L"edit")    return do_edit(params);
 		if (func == L"pwd")     return do_pwd(params);
 		if (func == L"chcp")    return do_chcp(params);
+		if (func == L"env")     return do_env(params);
 		if (func == L"version") return do_version();
 		throw winapi::win32_error(ERROR_INVALID_FUNCTION);
 	}

@@ -101,6 +101,18 @@ namespace winapi {
 		return ret;
 	}
 
+	std::wstring expand_environment_strings(std::wstring str)
+	{
+		int const size = ::ExpandEnvironmentStrings(str.c_str(), NULL, 0);
+		wchar_t* dest = new wchar_t[size];
+		if (::ExpandEnvironmentStrings(str.c_str(), dest, size) == 0) {
+			throw win32_error(::GetLastError());
+		}
+		std::wstring ret = dest;
+		delete[] dest;
+		return ret;
+	}
+
 	std::wstring uri2path(std::wstring uri) {
 		DWORD length = MAX_PATH;
 		WCHAR path[MAX_PATH];

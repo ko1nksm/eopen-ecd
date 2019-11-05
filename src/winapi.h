@@ -23,6 +23,8 @@ namespace winapi {
 	std::string wide2multi(std::wstring const& str, unsigned int codepage);
 	std::wstring multi2wide(std::string const& str, unsigned int codepage);
 
+	std::wstring expand_environment_strings(std::wstring str);
+
 	std::wstring uri2path(std::wstring uri);
 	std::wstring path2uri(std::wstring uri);
 
