@@ -12,21 +12,22 @@ fi
 case ${1:-sh} in
 
 (sh) cat<<HERE
-EOPEN_ROOT="$BASE"
+export EOPEN_ROOT="$BASE"
 alias eopen='sh "$BASE/wsl/eopen.sh"'
 alias ewd='sh "$BASE/wsl/ewd.sh"'
-. "$BASE/wsl/ecd.sh"
+alias ecd='. "$BASE/wsl/ecd.sh"'
 if type pushd >/dev/null 2>&1; then
-. "$BASE/wsl/epushd.sh"
+  alias epushd='. "$BASE/wsl/epushd.sh"'
 fi
 HERE
 ;;
 
 (tcsh) cat<<HERE
+set EOPEN_ROOT="$BASE";
 alias eopen 'sh "$BASE/wsl/eopen.sh"';
 alias ewd 'sh "$BASE/wsl/ewd.sh"';
-alias ecd 'eval `sh "$BASE/wsl/ecd.sh"`';
-alias epushd 'eval `sh "$BASE/wsl/epushd.sh"`';
+alias ecd 'source "$BASE/wsl/ecd.tcsh"';
+alias epushd 'source "$BASE/wsl/epushd.tcsh"';
 HERE
 ;;
 
@@ -34,8 +35,8 @@ HERE
 set EOPEN_ROOT "$BASE";
 alias eopen='sh "$BASE/wsl/eopen.sh"';
 alias ewd='sh "$BASE/wsl/ewd.sh"';
-source "$BASE/wsl/ecd.fish"
-source "$BASE/wsl/epushd.fish"
+alias ecd='source "$BASE/wsl/ecd.fish"';
+alias epushd='source "$BASE/wsl/epushd.fish"';
 HERE
 ;;
 
