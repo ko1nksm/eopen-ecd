@@ -1,31 +1,21 @@
-#!/bin/sh
+#shellcheck shell=sh
 
-set -eu
+ecd() {
+  typeset ewd
 
-ebridge="${0%/*}/../bin/ebridge.exe"
+  ewd=$(
+    cd "$EOPEN_ROOT" || exit 1
+    bin/ebridge.exe pwd
+  ) || return 1
 
-abort() {
-  if [ $# -gt 0 ]; then
-    printf '%s\n' "printf 'ecd: %s' '$*' >/dev/stderr; echo >/dev/stderr"
-  fi
-  echo false
-  exit 1
+  case $ewd in ([A-Za-z]:* | \\\\*)
+    if ewd=$(wslpath -u "$ewd" 2>/dev/null); then
+      cd "$ewd"
+      printf '%s\n' "$ewd"
+      return 0
+    fi
+  esac
+
+  printf "Unable to move to '%s'\n" "$ewd"
+  return 1
 }
-
-ebridge() (
-  cd "${ebridge%/*}" || exit 1
-  "./${ebridge##*/}" "$@"
-)
-
-ewd=$(ebridge pwd) || abort
-
-case $ewd in ([A-Za-z]:* | \\\\*)
-  if dest=$(wslpath -u "$ewd") 2>/dev/null; then
-    # shellcheck disable=SC2028
-    echo "cd \"$dest\"; printf '%s' \"$dest\"; echo"
-    exit
-  fi
-esac
-
-abort "Unable to move to $ewd"
-exit 1

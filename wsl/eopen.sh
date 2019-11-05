@@ -2,7 +2,7 @@
 
 set -eu
 
-ebridge="${0%/*}/../bin/ebridge.exe"
+ebridge="$EOPEN_ROOT/bin/ebridge.exe"
 
 abort() {
   printf 'eopen: %s\n' "$*" >&2
