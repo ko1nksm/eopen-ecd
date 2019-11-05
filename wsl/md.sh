@@ -33,6 +33,20 @@ escape() {
   done
 }
 
+whome() {
+  whome=$(
+    cd "$EOPEN_ROOT" || exit 1
+    bin/ebridge.exe env USERPROFILE
+  ) || abort
+
+  if dest=$(wslpath -u "$whome" 2>/dev/null); then
+    printf '%s' "$dest"
+    return 0
+  fi
+
+  abort "Unable to move to '$whome'"
+}
+
 ewd() {
   ewd=$(
     cd "$EOPEN_ROOT" || exit 1
@@ -58,14 +72,14 @@ for param; do
     *)
       case $param in
         "~~" | "~~/"*) # Windows home
-          whome=''
-          # param="$whome${param#~~}"
+          whome=$(whome) || abort
+          param="$whome${param#~~}"
           ;;
-        [A-Za-z]:* | \\\\*) # Windowd Path
+        [A-Za-z]:* | \\\\*) # Windows Path
           ewd=$(ewd) || abort
           param=$ewd
           ;;
-        "@" | "@/"*) # Current Exploler Location
+        "@" | "@/"*) # Exploler Location
           ewd=$(ewd) || abort
           param="$ewd${param#@}"
           [ "${param#@}" ] || at=1
