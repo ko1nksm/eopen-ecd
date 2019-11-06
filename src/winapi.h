@@ -30,7 +30,10 @@ namespace winapi {
 
 	unsigned int get_console_output_codepage();
 	unsigned int set_console_output_codepage(unsigned int codepage);
+	std::wstring get_console_title();
+	void set_console_title(std::wstring title);
 
+	int get_current_process_id();
 	struct process_entry {
 		DWORD process_id;
 		int window_text_length;

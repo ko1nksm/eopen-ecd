@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <string>
 #include <windows.h>
 #include <shlwapi.h>
 #include <tlhelp32.h>
@@ -42,10 +43,25 @@ namespace winapi {
 
 	void show_window(long handle)
 	{
+		std::wstring title = winapi::get_console_title();
+		int pid = winapi::get_current_process_id();
+		std::wstring uniq_title = title + L" - " + std::to_wstring(pid);
+		winapi::set_console_title(uniq_title);
+
+		HWND console = 0;
+		for (int i = 0; i < 100; i++) {
+			::Sleep(1);
+			console = FindWindow(NULL, uniq_title.c_str());
+			if (console != NULL) break;
+		}
+
+		::SetWindowPos(console, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		auto hwnd = (HWND)LongToHandle(handle);
 		::ShowWindow(hwnd, SW_SHOWNOACTIVATE);
 		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+		::SetWindowPos(console, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+		set_console_title(title);
 	}
 
 	void active_window(long handle)
@@ -146,6 +162,28 @@ namespace winapi {
 			throw win32_error(GetLastError());
 		}
 		return current_cp;
+	}
+
+	std::wstring get_console_title()
+	{
+		wchar_t ch;
+		int const size = ::GetConsoleTitle(&ch, 1);
+		if (size == 0) return L"";
+		wchar_t* dest = new wchar_t[size];
+		if (::GetConsoleTitle(dest, size) == 0) {
+			throw win32_error(::GetLastError());
+		}
+		std::wstring ret = dest;
+		delete[] dest;
+		return ret;
+	}
+
+	void set_console_title(std::wstring title) {
+		::SetConsoleTitle(title.c_str());
+	}
+
+	int get_current_process_id() {
+		return GetCurrentProcessId();
 	}
 
 	std::vector<process_entry> get_process_entries(std::wstring name) {
