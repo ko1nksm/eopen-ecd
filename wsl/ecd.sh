@@ -1,2 +1,2 @@
 #shellcheck shell=sh
-eval "$(sh "$EOPEN_ROOT/wsl/md.sh" cd "$@")"
+eval "$(sh "$EOPEN_ROOT/wsl/md.sh" sh cd "$@")"

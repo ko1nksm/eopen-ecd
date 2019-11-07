@@ -18,6 +18,7 @@ alias ewd='sh "$BASE/wsl/ewd.sh"'
 alias ecd='. "$BASE/wsl/ecd.sh"'
 if type pushd >/dev/null 2>&1; then
   alias epushd='. "$BASE/wsl/epushd.sh"'
+  alias epopd='. "$BASE/wsl/epopd.sh"'
 fi
 HERE
 ;;
@@ -28,6 +29,7 @@ alias eopen 'sh "$BASE/wsl/eopen.sh"';
 alias ewd 'sh "$BASE/wsl/ewd.sh"';
 alias ecd 'source "$BASE/wsl/ecd.tcsh"';
 alias epushd 'source "$BASE/wsl/epushd.tcsh"';
+alias epopd 'source "$BASE/wsl/epopd.tcsh"';
 HERE
 ;;
 
@@ -37,6 +39,7 @@ alias eopen='sh "$BASE/wsl/eopen.sh"';
 alias ewd='sh "$BASE/wsl/ewd.sh"';
 alias ecd='source "$BASE/wsl/ecd.fish"';
 alias epushd='source "$BASE/wsl/epushd.fish"';
+alias epopd='source "$BASE/wsl/epopd.fish"';
 HERE
 ;;
 

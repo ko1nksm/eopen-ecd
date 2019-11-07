@@ -63,8 +63,8 @@ ewd() {
   abort "Unable to move to '$ewd'"
 }
 
-cmd=$1 stop='' skip=''
-shift
+sh=$1 cmd=$2 stop='' skip=''
+shift 2
 
 for param; do
   case ${stop:+-}$param in
@@ -98,8 +98,12 @@ for param; do
 done
 
 set -- "$cmd" "$@"
-printf "'%s' " "$@"
+printf "%s " "$@"
 
 [ "$skip" ] && exit
 escape eopen "${0%/*}/eopen.sh"
-printf "&& sh '%s' -g ." "$eopen"
+if [ "$sh" = "fish" ]; then
+  printf "; and sh '%s' -g ." "$eopen"
+else
+  printf "&& sh '%s' -g ." "$eopen"
+fi
