@@ -207,4 +207,26 @@ namespace winapi {
 		::CloseHandle(handle);
 		return entries;
 	}
-}
+
+	long get_registry_value(std::wstring key, std::wstring name, long default_value)
+	{
+		HKEY hkey;
+		if (::RegOpenKeyEx(HKEY_CURRENT_USER, key.c_str(), 0, KEY_READ, &hkey) != ERROR_SUCCESS) {
+			throw win32_error(::GetLastError());
+		}
+
+		DWORD dwSize, dwType, data;
+		if (::RegQueryValueEx(hkey, name.c_str(), NULL, &dwType, NULL, &dwSize) != ERROR_SUCCESS) {
+			if (::GetLastError() == 0) return default_value;
+			::RegCloseKey(hkey);
+			throw win32_error(::GetLastError());
+		}
+
+		if (::RegQueryValueEx(hkey, name.c_str(), NULL, &dwType, (LPBYTE)&data, &dwSize) != ERROR_SUCCESS) {
+			::RegCloseKey(hkey);
+			throw win32_error(::GetLastError());
+		}
+
+		::RegCloseKey(hkey);
+		return data;
+	}}

@@ -40,5 +40,7 @@ namespace winapi {
 		long window_handle;
 	};
 	std::vector<process_entry> get_process_entries(std::wstring name);
+
+	long get_registry_value(std::wstring key, std::wstring name, long default_value);
 }
 	

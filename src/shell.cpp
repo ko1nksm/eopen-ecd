@@ -136,6 +136,27 @@ namespace ebridge {
 	}
 
 	void Shell::New(std::wstring path, bool background) {
+		if (path.empty()) {
+			path = util::getenv(L"EOPEN_LAUNCH_TO", L"");
+		}
+		if (path.empty()) {
+			// It also open same path if path is empty, but steal the focus on Windows 10.
+			std::wstring key = LR"(Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced)";
+			std::wstring name = L"LaunchTo";
+			long launch_to = winapi::get_registry_value(key, name, 0);
+			switch(launch_to) {
+			case 1: // This PC
+				path = L"shell:::{20D04FE0-3AEA-1069-A2D8-08002B30309D}";
+				break;
+			case 2: // Quick access
+				path = L"shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}";
+				break;
+			case 3: // Downloads folder (undocumented)
+				path = L"shell:::{374DE290-123F-4565-9164-39C4925E467B}";
+				break;
+			}
+		}
+
 		AccessCheck(NormalizePath(path));
 		auto show = background ? winapi::show::noactive : winapi::show::normal;
 		winapi::execute(L"explorer.exe", path, show);
