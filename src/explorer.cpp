@@ -24,7 +24,9 @@ namespace ebridge {
 	void Explorer::Open(std::wstring path)
 	{
 		try {
-			window->Navigate(path.c_str());
+			if (path.length() > 0) {
+				window->Navigate(path.c_str());
+			}
 		}
 		catch (const _com_error & e) {
 			if (e.Error() == HRESULT_FROM_WIN32(ERROR_CANCELLED)) {

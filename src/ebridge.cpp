@@ -18,7 +18,7 @@ int do_usage(std::wstring prog) {
 
 int do_open(std::vector<std::wstring> params) {
 	Shell shell;
-	std::wstring path = params.size() >= 1 ? params[0] : L".";
+	std::wstring path = params.size() >= 1 ? params[0] : L"";
 	std::wstring flags = params.size() >= 2 ? params[1] : L"";
 	bool background = util::exists_flag(flags, L"b");
 	shell.Open(path, background);

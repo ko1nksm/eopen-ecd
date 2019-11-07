@@ -90,7 +90,7 @@ for arg; do
   shift
 done
 
-[ $# -eq 0 ] && set -- .
+[ $# -eq 0 ] && set -- ""
 set -- "$1"
 origpath="$1"
 
@@ -98,6 +98,7 @@ if [ -e "$1" ]; then
   path=$(readlink -f "$1")
   set -- "$path"
 else
+
   case $1 in "~~" | "~~/"* |  "~~\\"*)
     whome=$(ebridge env USERPROFILE)
     set -- "$whome${1#~~}"
@@ -122,7 +123,7 @@ main() {
   if is_winpath "$1" || is_protocol "$1" || is_uncpath "$1"; then
     path=$1
   else
-    path=$(wslpath -aw "$1")
+    [ "$1" ] && path=$(wslpath -aw "$1") || path=""
   fi
 
   ebridge "$func" "$path" "$FLAGS"

@@ -91,44 +91,47 @@ namespace ebridge {
 		const long count = shellWindows->GetCount();
 		for (long i = 0; i < count; i++) {
 			SHDocVw::IWebBrowser2Ptr browser(shellWindows->Item(i));
-			Explorer window(browser);
-			if (!window.Exists()) continue;
-			if (window.GetHandle() != mainWindowHandle) continue;
-			return window;
+			Explorer explorer(browser);
+			if (!explorer.Exists()) continue;
+			if (explorer.GetHandle() != mainWindowHandle) continue;
+			return explorer;
 		}
 
 		return Explorer();
 	}
 
 	std::wstring Shell::GetWorkingDirectory() {
-		auto window = GetActiveExplorer();
-		if (!window.Exists()) {
+		auto explorer = GetActiveExplorer();
+		if (!explorer.Exists()) {
 			throw std::runtime_error(
 				"Explorer is not running. "
 				"(Is \"Launch folder windows in a separete process\" enabled?)");
 		}
-		return window.GetPath();
+		return explorer.GetPath();
 	}
 
 	void Shell::Open(std::wstring path, bool background) {
-		auto window = GetActiveExplorer();
+		auto explorer = GetActiveExplorer();
 
-		if (!window.Exists()) {
+		if (!explorer.Exists()) {
 			New(path, background);
 			return;
 		}
 
 		AccessCheck(NormalizePath(path));
-		window.Open(path);
+		explorer.Open(path);
+
 		try {
-			if (!std::filesystem::is_directory(path)) return;
+			if (path.length() > 0 && !std::filesystem::is_directory(path)) {
+				return;
+			}
 		}
 		catch (...) {} // Ignoring this error will not be a serious problem
 		if (background) {
-			winapi::show_window(window.GetHandle());
+			winapi::show_window(explorer.GetHandle());
 		}
 		else {
-			winapi::active_window(window.GetHandle());
+			winapi::active_window(explorer.GetHandle());
 		}
 	}
 
