@@ -1,20 +1,33 @@
-# eopen (+ecd)
+# eopen-ecd
 
-Open Explorer from WSL Terminal (plus PowerShell, Command Prompt).
-Change directory of Terminal to Explorer location.
+eopen: Open Explorer from Terminal.
+ecd: Change directory of Terminal and Explorer at once.
 
 ## Supported Windows and Terminals
 
 * `Windows 10 64bit 1903` or later recommended,
 * Probably works on `Windows 7` (include 32bit) or later.
 * `WSL` / `WSL2` recommended for the terminal.
+* Supports `bash`, `zsh`, `ksh`, `mksh`, `yash`, `tcsh`, `fish`  for the shell in WSL.
 * Semi-support for `Powershell` and `Command Prompt`.
 
 ## Usage
 
+### Available commands
+
+|                | eopen | eclose |  ewd  |  ecd  | epushd | epopd |
+| -------------- | :---: | :----: | :---: | :---: | :----: | :---: |
+| WSL            |   o   |   o    |   o   |   o   |   o    |   o   |
+| PowerShell     |   -   |   -    |   o   |   o   |   o    |   o   |
+| Command Prompt |   -   |   -    |   o   |   o   |   o    |   o   |
+
+**Note** Currently, `eopen` and `eclose` are not implemented for
+PowerShell / Command Prompt. Use `explorer.exe` instead.
+
 ### eopen
 
-Open the file or change the directory from the Terminal via a shell (Explorer).
+* Open the directory with Explorer from the Terminal.
+* Open the file with application from the Terminal.
 
 #### Examples
 
@@ -44,6 +57,7 @@ eopen calculator:
 eopen msnweather:
 eopen ms-settings:
 eopen xboxliveapp-1297287741: # Solitaire
+eopen shell:::{2559a1f8-21d7-11d4-bdaf-00c04f60b9f0} # Search Everywhere
 
 # Open files and directories under Windows
 eopen C:/Windows
@@ -52,24 +66,61 @@ eopen C:/Windows
 eopen //server/shared
 ```
 
-**Note** If you use `eopen -e`, you need to set the execution path to
-`EOPEN_EDITOR` environment variable for Windows  (not WSL).
+#### Environemnt variables
 
-**Note** `eopen` for PowerShell and Command Prompt are currently not
-implemented. It just alias of `explorer.exe`.
+| name              | description                             | default          |
+| ----------------- | --------------------------------------- | ---------------- |
+| `EOPEN_EDITOR`    | Execution path of editor for `eopen -e` | `notepad.exe`    |
+| `EOPEN_LAUNCH_TO` | Default location for new explorer       | Windows settings |
+
+**Note** Set environment variables on Windows (not in WSL).
+
+**Hint** `EOPEN_LAUNCH_TO` accepts [CLSID](#clsid) not only Windows path.
+
+### eclose
+
+Close the (lastest used) Explorer.
 
 ### ewd
 
-Print linux path of the (latest used) explorer location.
+Display path of the (latest used) Explorer location.
 
 ### ecd
 
-Change the terminal directory to the (latest used) explorer location.
+Change the directory of Terminal and Explorer at once.
 
-### epushd
+If first charactor of path is `:`, it means relative path from current
+Explorer location.
 
-Change the terminal directory to the (latest used) explorer location,
-And add directories to stack. (Use `pushd` instead of `cd`.)
+#### Examples
+
+```
+# Change the directory to the '/etc'. (Both Terminal and Explorer)
+ecd /etc
+
+# Change the directory to the 'C:\Windows'. (Both Terminal and Explorer)
+ecd c:/windows
+
+# Change the directory to the current Explorer location.
+ecd :
+
+# Change the directory to the 'workspace' from current Explorer location.
+ecd :/workspace
+
+# Change the directory to the home directory.
+ecd
+
+# Change the directory to the Windows home (%USERPROFILE%) directory. (WSL only)
+ecd ~~
+
+# Change the directory to the ~~ directory instead Windows home directory.
+ecd ./~~
+```
+
+### epushd / popd
+
+Push or pop a directory to the directory stack stack, And Change the directory
+of Terminal and Explorer at once. (Use `push` instead of `cd`.)
 
 **Note** Not available on `ksh` and `mksh`, since `push` is not implemented.
 
@@ -149,6 +200,24 @@ Change the following line to the appropriate path and add it to `profile.bat`
 ```
 
 Load it to Command Prompt. (For example, use `cmd /k profile.bat`)
+
+## CLSID
+
+Commonly used items only
+
+| Location                     | CLSID                                            |
+| ---------------------------- | ------------------------------------------------ |
+| Desktop                      | `shell:::{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}` |
+| Documents                    | `shell:::{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}` |
+| Downloads                    | `shell:::{374DE290-123F-4565-9164-39C4925E467B}` |
+| Frequent Places Folder       | `shell:::{3936E9E4-D92C-4EEE-A85A-BC16D5EA0819}` |
+| Library Folder               | `shell:::{a5a3563a-5755-4a6f-854e-afa3230b199f}` |
+| Quick access                 | `shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}` |
+| Recent Items Instance Folder | `shell:::{4564b25e-30cd-4787-82ba-39e73a750b14}` |
+| Recent Places Folder         | `shell:::{22877a6d-37a1-461a-91b0-dbda5aaebc99}` |
+| Recycle Bin                  | `shell:::{645FF040-5081-101B-9F08-00AA002F954E}` |
+| Search Everywhere            | `shell:::{2559a1f8-21d7-11d4-bdaf-00c04f60b9f0}` |
+| This PC                      | `shell:::{20D04FE0-3AEA-1069-A2D8-08002B30309D}` |
 
 ## For developers
 
