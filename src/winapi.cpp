@@ -59,7 +59,7 @@ namespace winapi {
 		}
 
 		::SetWindowPos(console, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		auto hwnd = (HWND)::LongToHandle(handle);
+		auto hwnd = (HWND)LongToHandle(handle);
 		::ShowWindow(hwnd, SW_SHOWNOACTIVATE);
 		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
@@ -69,7 +69,7 @@ namespace winapi {
 
 	void active_window(long handle)
 	{
-		auto hwnd = (HWND)::LongToHandle(handle);
+		auto hwnd = (HWND)LongToHandle(handle);
 		::ShowWindow(hwnd, SW_RESTORE);
 		::SetForegroundWindow(hwnd);
 		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -203,7 +203,7 @@ namespace winapi {
 			process_entry entry;
 			entry.process_id = process.th32ProcessID;
 			entry.window_handle = winapi::get_main_window_handle(process.th32ProcessID);
-			entry.window_text_length = ::GetWindowTextLength((HWND)::LongToHandle(entry.window_handle));
+			entry.window_text_length = ::GetWindowTextLength((HWND)LongToHandle(entry.window_handle));
 			entries.push_back(entry);
 		} while (::Process32Next(handle, &process));
 
