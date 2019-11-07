@@ -48,7 +48,7 @@ whome() {
     bin/ebridge.exe env USERPROFILE
   ) || abort
 
-  wpath "$ewd"
+  wpath "$whome"
 }
 
 ewd() {
