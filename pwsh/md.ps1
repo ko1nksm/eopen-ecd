@@ -1,6 +1,6 @@
 Param($cmd, $path)
 $ErrorActionPreference = "Stop"
-$ebridge = "$PSScriptRoot\..\bin\ebridge.exe"
+$ebridge = "$env:EOPEN_ROOT\bin\ebridge.exe"
 $skip = $FALSE
 
 if ($NULL -eq $path) { $path = $env:USERPROFILE }
