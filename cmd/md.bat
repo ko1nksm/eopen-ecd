@@ -1,7 +1,7 @@
 @echo off
 
 setlocal
-set ebridge="%~dp0..\bin\ebridge.exe"
+set ebridge="%EOPEN_ROOT%\bin\ebridge.exe"
 set skip=no
 
 call :path %*

@@ -1,8 +1,7 @@
 @echo off
 
 setlocal
-set ebridge="%~dp0..\bin\ebridge.exe"
-"%ebridge%" pwd
-if errorlevel 0 exit /b 1
+"%EOPEN_ROOT%\bin\ebridge.exe" pwd
+if errorlevel 1 exit /b 1
 echo.
 endlocal
