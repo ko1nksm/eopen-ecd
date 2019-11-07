@@ -12,7 +12,7 @@ using namespace ebridge;
 
 int do_usage(std::wstring prog) {
 	std::wcout << L"Usage: " + std::filesystem::path(prog).stem().wstring();
-	std::wcout << " <open | new | edit | pwd | chcp | version> [<parameter>...]";
+	std::wcout << " <open | new | edit | close | pwd | chcp | env | version> [<parameter>...]";
 	std::wcout << std::endl;
 	return 0;
 }
