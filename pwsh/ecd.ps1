@@ -1,26 +1,37 @@
-try {
-  $ErrorActionPreference = "Stop"
-  $ebridge = "$PSScriptRoot\..\bin\ebridge.exe"
-  $path = ""
-  $path = (& "$ebridge" pwd auto)
+Param($path)
+$ErrorActionPreference = "Stop"
+$ebridge = "$PSScriptRoot\..\bin\ebridge.exe"
+$skip = $FALSE
+
+if ($path -match "^(:|:[/\\].*)$") {
+  $ewd = ""
+  $ewd = (& "$ebridge" pwd auto)
   if ($LASTEXITCODE -ne 0) { exit 1 }
-  $dir = [System.IO.Path]::GetDirectoryName($path)
-  $file = [System.IO.Path]::GetFileName($path)
-  $dirs = [System.IO.Directory]::GetDirectories($dir, $file)
-  if ($dirs.length -eq 1) {
+  if ($NULL -eq $ewd) { exit 1 }
+
+  try {
+    $current = Get-Location
     Set-Location $path
-    [Console]::WriteLine($path)
-  } else {
+    Set-Location $current
+  } catch {
     # Fallback when matching multiple unicode paths.
     # Characters that are invalid in the current code page are replaced with '?'.
     # Therefore, multiple folders may match. So switch the code page temporary.
     $encode = [Console]::OutputEncoding
     [Console]::OutputEncoding = [Text.Encoding]::UTF8
-    $path = (& "$ebridge" pwd)
-    Set-Location $path
-    [Console]::WriteLine($path)
+    $ewd = (& "$ebridge" pwd)
     [Console]::OutputEncoding = $encode
   }
-} catch {
-  [Console]::Error.WriteLine("Unable to move to '" + $path + "'")
+
+  if ($path -eq ":") {
+    $skip = $TRUE
+    $path = $ewd
+  } else {
+    $path = ($ewd -replace "\\$", "") + $path.Substring(1)
+  }
 }
+
+Set-Location $path
+if ($skip) { exit 0 }
+$dir = Get-Location | Convert-Path
+& "$ebridge" "open" $dir b
