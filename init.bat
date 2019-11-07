@@ -5,7 +5,6 @@ set EOPEN_ROOT=%EOPEN_ROOT:~0,-1%
 
 if not exist "%EOPEN_ROOT%\bin\ebridge.exe" goto :error
 
-doskey eopen="explorer.exe" $*
 doskey ewd="%EOPEN_ROOT%\cmd\ewd.bat" $*
 doskey ecd="%EOPEN_ROOT%\cmd\ecd.bat" $*
 doskey epushd="%EOPEN_ROOT%\cmd\epushd.bat" $*

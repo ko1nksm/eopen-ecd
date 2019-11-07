@@ -1,6 +1,5 @@
 $env:EOPEN_ROOT=$PSScriptRoot
 if (Test-Path "$env:EOPEN_ROOT\bin\ebridge.exe") {
-  Set-Alias eopen "explorer.exe"
   Set-Alias ewd "$env:EOPEN_ROOT\pwsh\ewd.ps1"
   Set-Alias ecd "$env:EOPEN_ROOT\pwsh\ecd.ps1"
   Set-Alias epushd "$env:EOPEN_ROOT\pwsh\epushd.ps1"
