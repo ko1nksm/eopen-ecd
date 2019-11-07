@@ -23,6 +23,9 @@ namespace winapi {
 		::LocalFree(buffer);
 		return ret;
 	}
+	win32_error_path_not_found::win32_error_path_not_found() : win32_error(ERROR_PATH_NOT_FOUND) { }
+	win32_error_invalid_function::win32_error_invalid_function() : win32_error(ERROR_INVALID_FUNCTION) { }
+	win32_error_invalid_parameter::win32_error_invalid_parameter() : win32_error(ERROR_INVALID_PARAMETER) { }
 
 	void execute(std::wstring exec, std::wstring parameters, show show_mode) {
 		int show = 0;
@@ -56,7 +59,7 @@ namespace winapi {
 		}
 
 		::SetWindowPos(console, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		auto hwnd = (HWND)LongToHandle(handle);
+		auto hwnd = (HWND)::LongToHandle(handle);
 		::ShowWindow(hwnd, SW_SHOWNOACTIVATE);
 		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
@@ -66,7 +69,7 @@ namespace winapi {
 
 	void active_window(long handle)
 	{
-		auto hwnd = (HWND)LongToHandle(handle);
+		auto hwnd = (HWND)::LongToHandle(handle);
 		::ShowWindow(hwnd, SW_RESTORE);
 		::SetForegroundWindow(hwnd);
 		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -183,16 +186,16 @@ namespace winapi {
 	}
 
 	int get_current_process_id() {
-		return GetCurrentProcessId();
+		return ::GetCurrentProcessId();
 	}
 
 	std::vector<process_entry> get_process_entries(std::wstring name) {
 		std::vector<process_entry> entries;
 
-		HANDLE handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS | TH32CS_SNAPMODULE, 0);
+		HANDLE handle = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS | TH32CS_SNAPMODULE, 0);
 		if (!handle) return entries;
 
-		PROCESSENTRY32 process = { sizeof(PROCESSENTRY32) };
+		::PROCESSENTRY32 process = { sizeof(::PROCESSENTRY32) };
 		::Process32First(handle, &process);
 
 		do {
@@ -200,7 +203,7 @@ namespace winapi {
 			process_entry entry;
 			entry.process_id = process.th32ProcessID;
 			entry.window_handle = winapi::get_main_window_handle(process.th32ProcessID);
-			entry.window_text_length = ::GetWindowTextLength((HWND)LongToHandle(entry.window_handle));
+			entry.window_text_length = ::GetWindowTextLength((HWND)::LongToHandle(entry.window_handle));
 			entries.push_back(entry);
 		} while (::Process32Next(handle, &process));
 
@@ -229,4 +232,5 @@ namespace winapi {
 
 		::RegCloseKey(hkey);
 		return data;
-	}}
+	}
+}

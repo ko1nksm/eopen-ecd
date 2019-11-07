@@ -14,6 +14,24 @@ namespace winapi {
 		int code;
 	};
 
+	class win32_error_path_not_found : public win32_error
+	{
+	public:
+		win32_error_path_not_found();
+	};
+
+	class win32_error_invalid_function : public win32_error
+	{
+	public:
+		win32_error_invalid_function();
+	};
+
+	class win32_error_invalid_parameter : public win32_error
+	{
+	public:
+		win32_error_invalid_parameter();
+	};
+
 	void execute(std::wstring exec, std::wstring parameters, show show);
 
 	void show_window(long handle);
@@ -35,7 +53,7 @@ namespace winapi {
 
 	int get_current_process_id();
 	struct process_entry {
-		DWORD process_id;
+		long process_id;
 		int window_text_length;
 		long window_handle;
 	};

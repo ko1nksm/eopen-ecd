@@ -61,7 +61,7 @@ namespace ebridge {
 		// Absolute path or UNC with path
 		try {
 			if (!std::filesystem::exists(path)) {
-				throw winapi::win32_error(ERROR_PATH_NOT_FOUND);
+				throw winapi::win32_error_path_not_found();
 			}
 		}
 		catch (const std::filesystem::filesystem_error & e) {

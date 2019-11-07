@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <comdef.h>
 #include "shell.h"
 #include "util.h"
 #include "version.h"
@@ -84,7 +85,7 @@ int do_chcp(std::vector<std::wstring> params) {
 		cp = std::stoi(codepage);
 	}
 	catch (...) {
-		throw winapi::win32_error(ERROR_INVALID_PARAMETER);
+		throw winapi::win32_error_invalid_parameter();
 	}
 
 	unsigned int previous_cp = winapi::set_console_output_codepage(cp);
@@ -123,7 +124,7 @@ int process(int argc, wchar_t* argv[]) {
 		if (func == L"chcp")    return do_chcp(params);
 		if (func == L"env")     return do_env(params);
 		if (func == L"version") return do_version();
-		throw winapi::win32_error(ERROR_INVALID_FUNCTION);
+		throw winapi::win32_error_invalid_function();
 	}
 	catch (winapi::win32_error & e) {
 		std::wcerr << e.message() << std::endl;
@@ -135,12 +136,12 @@ int process(int argc, wchar_t* argv[]) {
 		std::wcerr << e.ErrorMessage() << std::endl;
 	}
 	catch (std::runtime_error & e) {
-		UINT cp = ::GetConsoleOutputCP();
+		unsigned int cp = winapi::get_console_output_codepage();
 		std::wcerr << winapi::multi2wide(e.what(), cp) << std::endl;
 	}
 	catch (std::exception & e) {
 		std::wcerr << L"An unexpected exception occurred: ";
-		UINT cp = ::GetConsoleOutputCP();
+		unsigned int cp = winapi::get_console_output_codepage();
 		std::wcerr << winapi::multi2wide(e.what(), cp) << std::endl;
 	}
 	catch (...) {

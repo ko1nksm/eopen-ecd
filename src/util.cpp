@@ -1,4 +1,7 @@
 ﻿#include <regex>
+#include <comdef.h>
+#include <fcntl.h>
+#include <io.h>
 #include "util.h"
 
 std::wstring util::getenv(std::wstring name, std::wstring default_value)

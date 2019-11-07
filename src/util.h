@@ -1,8 +1,5 @@
 ﻿#pragma once
 #include <iostream>
-#include <comdef.h>
-#include <fcntl.h>
-#include <io.h>
 
 namespace util {
 	class silent_error {};
