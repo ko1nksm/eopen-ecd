@@ -9,5 +9,6 @@ namespace ebridge {
 		void Open(std::wstring path, bool background = false);
 		void New(std::wstring path, bool background = false);
 		void Edit(std::wstring path, bool background = false);
+		void Close();
 	};
 }

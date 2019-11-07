@@ -11,6 +11,7 @@ namespace ebridge {
 		bool Exists();
 		std::wstring GetPath();
 		void Open(std::wstring path);
+		void Close();
 		long GetHandle();
 
 	private:

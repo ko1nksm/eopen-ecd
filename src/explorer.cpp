@@ -37,6 +37,20 @@ namespace ebridge {
 
 	}
 
+	void Explorer::Close()
+	{
+		try {
+			window->Quit();
+		}
+		catch (const _com_error & e) {
+			if (e.Error() == HRESULT_FROM_WIN32(ERROR_CANCELLED)) {
+				throw util::silent_error();
+			}
+			throw e;
+		}
+
+	}
+
 	long Explorer::GetHandle()
 	{
 		HWND hwnd;

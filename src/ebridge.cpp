@@ -43,6 +43,12 @@ int do_edit(std::vector<std::wstring> params) {
 	return 0;
 }
 
+int do_close(std::vector<std::wstring> params) {
+	Shell shell;
+	shell.Close();
+	return 0;
+}
+
 int do_pwd(std::vector<std::wstring> params) {
 	Shell shell;
 	std::wstring codepage = params.size() >= 1 ? params[0] : L"";
@@ -98,20 +104,21 @@ int do_version() {
 }
 
 int process(int argc, wchar_t* argv[]) {
-	if (argc == 1) {
-		return do_usage(argv[0]);
-	}
-
-	std::wstring func = argv[1];
-	std::vector<std::wstring> params;
-	for (int i = 2; i < argc; i++) {
-		params.push_back(argv[i]);
-	}
-
 	try {
+		if (argc == 1) {
+			return do_usage(argv[0]);
+		}
+
+		std::wstring func = argv[1];
+		std::vector<std::wstring> params;
+		for (int i = 2; i < argc; i++) {
+			params.push_back(argv[i]);
+		}
+
 		if (func == L"open")    return do_open(params);
 		if (func == L"new")     return do_new(params);
 		if (func == L"edit")    return do_edit(params);
+		if (func == L"close")   return do_close(params);
 		if (func == L"pwd")     return do_pwd(params);
 		if (func == L"chcp")    return do_chcp(params);
 		if (func == L"env")     return do_env(params);

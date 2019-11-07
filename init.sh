@@ -14,6 +14,7 @@ case ${1:-sh} in
 (sh) cat<<HERE
 export EOPEN_ROOT="$BASE"
 alias eopen='sh "$BASE/wsl/eopen.sh"'
+alias eclose='sh "$BASE/wsl/eclose.sh"'
 alias ewd='sh "$BASE/wsl/ewd.sh"'
 alias ecd='. "$BASE/wsl/ecd.sh"'
 if type pushd >/dev/null 2>&1; then
@@ -26,6 +27,7 @@ HERE
 (tcsh) cat<<HERE
 set EOPEN_ROOT="$BASE";
 alias eopen 'sh "$BASE/wsl/eopen.sh"';
+alias eclose 'sh "$BASE/wsl/eclose.sh"';
 alias ewd 'sh "$BASE/wsl/ewd.sh"';
 alias ecd 'source "$BASE/wsl/ecd.tcsh"';
 alias epushd 'source "$BASE/wsl/epushd.tcsh"';
@@ -36,6 +38,7 @@ HERE
 (fish) cat<<HERE
 set EOPEN_ROOT "$BASE";
 alias eopen='sh "$BASE/wsl/eopen.sh"';
+alias eclose='sh "$BASE/wsl/eclose.sh"';
 alias ewd='sh "$BASE/wsl/ewd.sh"';
 alias ecd='source "$BASE/wsl/ecd.fish"';
 alias epushd='source "$BASE/wsl/epushd.fish"';

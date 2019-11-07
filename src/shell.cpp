@@ -148,4 +148,12 @@ namespace ebridge {
 		auto show = background ? winapi::show::noactive : winapi::show::normal;
 		winapi::execute(editor, path, show);
 	}
+
+	void Shell::Close() {
+		auto explorer = GetActiveExplorer();
+
+		if (explorer.Exists()) {
+			explorer.Close();
+		}
+	}
 }
