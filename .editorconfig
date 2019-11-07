@@ -1,0 +1,24 @@
+root = true
+
+[*.bat]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.pwsh]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.cpp,*.h]
+charset = utf-8-bom
+end_of_line = lf
+insert_final_newline = true
+indent_style = tab
+trim_trailing_whitespace = true
