@@ -4,8 +4,11 @@ set -eu
 
 BASE=$(cd "$(dirname "$0")"; pwd)
 
-if [ ! -x "$BASE/bin/ebridge.exe" ]; then
-  echo "ebridge.exe not found or is not executable: '$BASE/bin/ebridge.exe'" >&2
+cd "$BASE"
+if [ ! -x "bin/ebridge.exe" ]; then
+  echo "[eopen-ecd] ebridge.exe not found or is not executable." >&2
+  echo "Place ebridge.exe and enter the following command." >&2
+  echo " chmod +x '$BASE/bin/ebridge.exe'" >&2
   exit 1
 fi
 
