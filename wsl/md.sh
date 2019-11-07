@@ -33,18 +33,22 @@ escape() {
   done
 }
 
+wpath() {
+  if [ "$1" ] && dest=$(wslpath -u "$1" 2>/dev/null); then
+    printf '%s' "$dest"
+    return 0
+  fi
+
+  abort "Unable to move to '$1'"
+}
+
 whome() {
   whome=$(
     cd "$EOPEN_ROOT" || exit 1
     bin/ebridge.exe env USERPROFILE
   ) || abort
 
-  if dest=$(wslpath -u "$whome" 2>/dev/null); then
-    printf '%s' "$dest"
-    return 0
-  fi
-
-  abort "Unable to move to '$whome'"
+  wpath "$ewd"
 }
 
 ewd() {
@@ -53,14 +57,7 @@ ewd() {
     bin/ebridge.exe pwd
   ) || abort
 
-  case $ewd in ([A-Za-z]:* | \\\\*)
-    if dest=$(wslpath -u "$ewd" 2>/dev/null); then
-      printf '%s' "$dest"
-      return 0
-    fi
-  esac
-
-  abort "Unable to move to '$ewd'"
+  wpath "$ewd"
 }
 
 sh=$1 cmd=$2 stop='' skip=''
@@ -71,18 +68,18 @@ for param; do
     -* | +*) set -- "$@" "$param" ;;
     *)
       case $param in
+        [A-Za-z]:* | \\\\*) # Windows Path
+          wpath=$(wpath "$param") || abort
+          param=$wpath
+          ;;
         "~~" | "~~/"*) # Windows home
           whome=$(whome) || abort
           param="$whome${param#~~}"
           ;;
-        [A-Za-z]:* | \\\\*) # Windows Path
-          ewd=$(ewd) || abort
-          param=$ewd
-          ;;
         : | :/*) # Exploler Location
           ewd=$(ewd) || abort
-          param="$ewd${param#:}"
           [ "${param#:}" ] || skip=1
+          param="$ewd${param#:}"
           ;;
       esac
       set -- "$@" "$param"
