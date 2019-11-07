@@ -63,7 +63,7 @@ ewd() {
   abort "Unable to move to '$ewd'"
 }
 
-cmd=$1 stop='' at=''
+cmd=$1 stop='' skip=''
 shift
 
 for param; do
@@ -79,10 +79,10 @@ for param; do
           ewd=$(ewd) || abort
           param=$ewd
           ;;
-        "@" | "@/"*) # Exploler Location
+        : | :/*) # Exploler Location
           ewd=$(ewd) || abort
-          param="$ewd${param#@}"
-          [ "${param#@}" ] || at=1
+          param="$ewd${param#:}"
+          [ "${param#:}" ] || skip=1
           ;;
       esac
       set -- "$@" "$param"
@@ -100,7 +100,6 @@ done
 set -- "$cmd" "$@"
 printf "'%s' " "$@"
 
-if [ ! "$at" ]; then
-  escape eopen "${0%/*}/eopen.sh"
-  printf "&& sh '%s' -g ." "$eopen"
-fi
+[ "$skip" ] && exit
+escape eopen "${0%/*}/eopen.sh"
+printf "&& sh '%s' -g ." "$eopen"
