@@ -4,11 +4,6 @@ Set-Location "$PSScriptRoot"
 
 New-Item "tmp", "dist" -ItemType Directory -Force | Out-Null
 function build($plartform) {
-  if (! (Test-Path "src\$plartform")) {
-    [Console]::Error.WriteLine("ERROR: Platform '$plartform' not defined")
-    exit 1
-  }
-
   Set-Location src\
   msbuild.exe /p:Configuration="Release;Platform=$plartform" /m
   if ($LASTEXITCODE -ne 0) { throw "Build failed." }
