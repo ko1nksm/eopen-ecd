@@ -2,56 +2,6 @@
 
 set -eu
 
-ebridge="$EOPEN_ROOT/bin/ebridge.exe"
-
-abort() {
-  printf 'eopen: %s\n' "$*" >&2
-  exit 1
-}
-
-ebridge() (
-  cd "${ebridge%/*}" || exit 1
-  "./${ebridge##*/}" "$@"
-)
-
-is_windrive() {
-  case $1 in
-    [a-zA-Z]:) return 0
-  esac
-  return 1
-}
-
-is_winpath() {
-  case $1 in
-    [a-zA-Z]:[\\/]*) return 0
-  esac
-  return 1
-}
-
-is_wslpath() {
-  case $1 in
-    [\\/][\\/]wsl\$[\\/]?*) return 0
-  esac
-  return 1
-}
-
-is_uncpath() {
-  case $1 in
-    [\\/][\\/]*) return 0
-  esac
-  return 1
-}
-
-is_protocol() {
-  case $1 in (*:*)
-    case ${1%%:*} in (*[!0-9a-zA-Z.+-]*)
-      return 1
-    esac
-    return 0
-  esac
-  return 1
-}
-
 usage() {
   cat <<'HERE'
 Usage: eopen [options] [file | directory | uri]
@@ -74,6 +24,35 @@ HERE
 exit
 }
 
+abort() {
+  printf 'eopen: %s\n' "$*" >&2
+  exit 1
+}
+
+ebridge() (
+  cd "$EOPEN_ROOT" || exit 1
+  bin/ebridge.exe "$@"
+)
+
+is_linux_path() {
+  case $1 in ([a-zA-Z]: | [a-zA-Z]:[\\/]*) return 1; esac # Windows path
+  case $1 in ("~~" | "~~"[\\/]*) return 1; esac # Windows home path
+  case $1 in ([\\/][\\/]*) return 1; esac # UNC or WSL path
+  case $1 in (: | :[\\/]*) return 1; esac # Exploler Location
+  case $1 in (*:*)
+    case ${1%%:*} in (*[!0-9a-zA-Z.+-]*) return 0; esac
+    return 1; # protocol
+  esac
+}
+
+check_path() {
+  [ -e "$1" ]
+}
+
+check_edit_path() {
+  [ -e "$1" ] || [ -d "$(dirname "$1")" ]
+}
+
 EDITOR='' NEW='' SUDO='' FLAGS=''
 
 for arg; do
@@ -90,87 +69,54 @@ for arg; do
   shift
 done
 
-[ $# -eq 0 ] && set -- ""
-set -- "$1"
-origpath="$1"
-
-if [ -e "$1" ]; then
-  path=$(readlink -f "$1")
-  set -- "$path"
-else
-
-  case $1 in "~~" | "~~/"* |  "~~\\"*)
-    whome=$(ebridge env USERPROFILE)
-    set -- "$whome${1#~~}"
-  esac
-
-  is_windrive "$1" && set -- "$1\\"
-  if is_winpath "$1" || is_wslpath "$1"; then
-    path=$(wslpath -au "$1") 2>/dev/null || abort "No such file or directory"
-    set -- "$path"
-  fi
-fi
-
-check_path() {
-  [ -e "$1" ]
-}
-
-check_edit_path() {
-  [ -e "$1" ] || [ -d "$(dirname "$1")" ]
-}
-
-main() {
-  if [ "$EDITOR" ]; then
-    if [ -e "$1" ] && [ ! -w "$1" ]; then
-      echo 'Warning, do not have write permission' >&2
-    fi
-    func=edit
-  else
-    [ "$NEW" ] && func=new || func=open
-  fi
-
-  if is_protocol "$1" || is_uncpath "$1"; then
-    path=$1
-  else
-    check_${EDITOR:+edit_}path "$1" || abort "No such file or directory"
-    path=$(wslpath -aw "$1")
-  fi
-
-  ebridge "$func" "$path" "$FLAGS"
-}
+set -- "${1:-}"
 
 if [ "$SUDO" ]; then
-  [ -f "$1" ] || abort "'$origpath' is not a file"
-  tmpdir='' tmpfile=''
+  is_linux_path "$1" || abort "'$1' is not linux path"
+  [ -f "$1" ] || abort "'$1' is not a file"
 
+  tmpdir='' tmpfile=''
   cleanup() {
-    if [ -f "$tmpfile" ]; then
-      printf '\n%s\n' "Delete tempfile '$tmpfile'"
-      rm "$tmpfile"
-      [ -d "$tmpdir" ] && rmdir "$tmpdir"
-    fi
+    [ -f "$tmpfile" ] && printf "\nDelete tempfile '%s'\n" "$tmpfile"
+    [ -f "$tmpfile" ] && rm "$tmpfile"
+    [ -d "$tmpdir" ] && rmdir "$tmpdir"
     exit
   }
   trap cleanup INT TERM EXIT
 
   tmpdir=$(mktemp -d)
-  orgfile="$1" tmpfile=$tmpdir/${1##*/}
+  orgfile=$1 tmpfile=$tmpdir/${1##*/}
+  printf "Copied temporarily to '%s'.\n" "$tmpfile"
   cp --preserve=timestamps "$orgfile" "$tmpfile"
-  printf "Copy '%s' to '%s'\n" "$orgfile" "$tmpfile"
   set -- "$tmpfile"
+fi
 
-  main "$@"
+case $1 in ("~~" | "~~"[\\/]*) # Windows home path
+  path=$(ebridge env USERPROFILE)
+  set -- "$path${1#~~}"
+esac
 
-  printf 'Waiting for the file changes... To stop, press CTRL-C'
-  while true; do
-    sleep 1 ||:
-    #shellcheck disable=SC2039
-    if [ "$tmpfile" -nt "$orgfile" ]; then
-      printf '\nThe file changes detected\n'
-      sudo cp "$tmpfile" "$orgfile"
-      printf '%s' "Wrote '$orgfile'"
-    fi
-  done
-else
-  main "$@"
+case $1 in (: | :[\\/]*) # Exploler Location
+  path=$(ebridge pwd)
+  set -- "$path${1#:}"
+esac
+
+if is_linux_path "$1"; then
+  path=$(readlink -f "$1")
+  check_${EDITOR:+edit_}path "$path" || abort "No such file or directory"
+  if [ "$EDITOR" ] && [ ! -w "$1" ]; then
+    echo 'Warning, do not have write permission.' >&2
+  fi
+  path=$(wslpath -aw "$path")
+  set -- "$path"
+fi
+
+func=open
+[ "$NEW" ] && func=new
+[ "$EDITOR" ] && func=edit
+ebridge "$func" "$1" "$FLAGS"
+
+if [ "$SUDO" ]; then
+  echo "Press CTRL-C to stop when finished editing the file"
+  sudo sh "$EOPEN_ROOT/wsl/sudo-watch.sh" "$tmpfile" "$orgfile"
 fi
