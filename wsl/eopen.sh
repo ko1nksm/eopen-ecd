@@ -30,7 +30,7 @@ is_winpath() {
 
 is_wslpath() {
   case $1 in
-    [\\/][\\/]wsl\$[\\/]*) return 0
+    [\\/][\\/]wsl\$[\\/]?*) return 0
   esac
   return 1
 }
@@ -106,9 +106,18 @@ else
 
   is_windrive "$1" && set -- "$1\\"
   if is_winpath "$1" || is_wslpath "$1"; then
-    path=$(wslpath -au "$1") 2>/dev/null && set -- "$path"
+    path=$(wslpath -au "$1") 2>/dev/null || abort "No such file or directory"
+    set -- "$path"
   fi
 fi
+
+check_path() {
+  [ -e "$1" ]
+}
+
+check_edit_path() {
+  [ -e "$1" ] || [ -d "$(dirname "$1")" ]
+}
 
 main() {
   if [ "$EDITOR" ]; then
@@ -120,10 +129,11 @@ main() {
     [ "$NEW" ] && func=new || func=open
   fi
 
-  if is_winpath "$1" || is_protocol "$1" || is_uncpath "$1"; then
+  if is_protocol "$1" || is_uncpath "$1"; then
     path=$1
   else
-    [ "$1" ] && path=$(wslpath -aw "$1") || path=""
+    check_${EDITOR:+edit_}path "$1" || abort "No such file or directory"
+    path=$(wslpath -aw "$1")
   fi
 
   ebridge "$func" "$path" "$FLAGS"
