@@ -47,15 +47,15 @@ namespace ebridge {
 		return util::normalize_path_separator(cwd + L"\\" + path);
 	}
 
-	void AccessCheck(std::wstring path) {
+	std::wstring AccessCheck(std::wstring path) {
 		// UNC that Host name only
 		if (std::regex_match(path, std::wregex(LR"([\\/][\\/][^\\]+(|\\))"))) {
-			return;
+			return path;
 		}
 
 		// URI (does not start with a drive letter)
 		if (!std::regex_match(path, std::wregex(L"[a-zA-Z]:.*"))) {
-			return;
+			return path;
 		}
 
 		// Absolute path or UNC with path
@@ -74,6 +74,7 @@ namespace ebridge {
 				throw winapi::win32_error(code);
 			}
 		}
+		return path;
 	}
 
 	Explorer GetActiveExplorer() {
@@ -118,7 +119,7 @@ namespace ebridge {
 			return;
 		}
 
-		AccessCheck(NormalizePath(path));
+		path = AccessCheck(NormalizePath(path));
 		explorer.Open(path);
 
 		try {
@@ -157,7 +158,7 @@ namespace ebridge {
 			}
 		}
 
-		AccessCheck(NormalizePath(path));
+		path = AccessCheck(NormalizePath(path));
 		auto show = background ? winapi::show::noactive : winapi::show::normal;
 		winapi::execute(L"explorer.exe", path, show);
 	}
@@ -165,7 +166,7 @@ namespace ebridge {
 	void Shell::Edit(std::wstring path, bool background)
 	{
 		std::wstring editor = util::getenv(L"EOPEN_EDITOR", L"notepad.exe");
-		AccessCheck(NormalizePath(path));
+		path = AccessCheck(NormalizePath(path));
 		auto show = background ? winapi::show::noactive : winapi::show::normal;
 		winapi::execute(editor, path, show);
 	}

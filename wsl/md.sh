@@ -68,15 +68,15 @@ for param; do
     -* | +*) set -- "$@" "$param" ;;
     *)
       case $param in
-        [A-Za-z]:* | \\\\*) # Windows Path
+        [A-Za-z]:* | [\\/][\\/]*) # Windows Path
           wpath=$(wpath "$param") || abort
           param=$wpath
           ;;
-        "~~" | "~~/"*) # Windows home
+        "~~" | "~~"[\\/]*) # Windows home
           whome=$(whome) || abort
           param="$whome${param#~~}"
           ;;
-        : | :/*) # Exploler Location
+        : | :[\\/]*) # Exploler Location
           ewd=$(ewd) || abort
           [ "${param#:}" ] || skip=1
           param="$ewd${param#:}"
