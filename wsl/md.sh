@@ -74,12 +74,12 @@ for param; do
           ;;
         "~~" | "~~"[\\/]*) # Windows home
           whome=$(whome) || abort
-          param="$whome${param#~~}"
+          param=$whome${param#~~}
           ;;
         : | :[\\/]*) # Exploler Location
           ewd=$(ewd) || abort
           [ "${param#:}" ] || skip=1
-          param="$ewd${param#:}"
+          param=$ewd${param#:}
           ;;
       esac
       set -- "$@" "$param"
@@ -98,7 +98,8 @@ set -- "$cmd" "$@"
 printf "%s " "$@"
 
 [ "$skip" ] && exit
-escape eopen "${0%/*}/eopen.sh"
+eopen=${0%/*}/eopen.sh
+escape eopen "$eopen"
 if [ "$sh" = "fish" ]; then
   printf "; and sh '%s' -g ." "$eopen"
 else
