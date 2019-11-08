@@ -215,19 +215,18 @@ namespace winapi {
 	{
 		HKEY hkey;
 		if (::RegOpenKeyEx(HKEY_CURRENT_USER, key.c_str(), 0, KEY_READ, &hkey) != ERROR_SUCCESS) {
-			throw win32_error(::GetLastError());
+			return default_value;
 		}
 
 		DWORD dwSize, dwType, data;
 		if (::RegQueryValueEx(hkey, name.c_str(), NULL, &dwType, NULL, &dwSize) != ERROR_SUCCESS) {
-			if (::GetLastError() == 0) return default_value;
 			::RegCloseKey(hkey);
-			throw win32_error(::GetLastError());
+			return default_value;
 		}
 
 		if (::RegQueryValueEx(hkey, name.c_str(), NULL, &dwType, (LPBYTE)&data, &dwSize) != ERROR_SUCCESS) {
 			::RegCloseKey(hkey);
-			throw win32_error(::GetLastError());
+			return default_value;
 		}
 
 		::RegCloseKey(hkey);
