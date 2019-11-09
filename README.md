@@ -50,20 +50,20 @@ eopen -e --sudo /etc/hosts
 # Opens with Windows default browser
 eopen http://google.com
 
-# Open other protocols
-eopen mailto:user@example.com
-eopen shell:downloads
-eopen calculator:
-eopen msnweather:
-eopen ms-settings:
-eopen xboxliveapp-1297287741: # Solitaire
-eopen shell:::{2559a1f8-21d7-11d4-bdaf-00c04f60b9f0} # Search Everywhere
-
 # Open files and directories under Windows
 eopen C:/Windows
 
 # Open files and directories under Network shared folder
 eopen //server/shared
+
+# Others
+eopen mailto:user@example.com   # Mail protocol
+eopen calculator:               # Application
+eopen shell:Personal            # Shell commands
+eopen :MyComputerFolder         # Shorthand for shell:
+eopen shell:::{2559a1f8-21d7-11d4-bdaf-00c04f60b9f0} # CLSID
+eopen :                         # Current Explorer location
+eopen :/workspace               # Relative path from current Explorer location
 ```
 
 #### Environemnt variables
@@ -75,7 +75,7 @@ eopen //server/shared
 
 **Note** Set environment variables on Windows (not in WSL).
 
-**Hint** `EOPEN_LAUNCH_TO` accepts [CLSID](#clsid) not only Windows path.
+**Hint** `EOPEN_LAUNCH_TO` accepts *Shell: commands* and *CLSID* not only Windows path.
 
 ### eclose
 
@@ -200,24 +200,6 @@ Change the following line to the appropriate path and add it to `profile.bat`
 ```
 
 Load it to Command Prompt. (For example, use `cmd /k profile.bat`)
-
-## CLSID
-
-Commonly used items only
-
-| Location                     | CLSID                                            |
-| ---------------------------- | ------------------------------------------------ |
-| Desktop                      | `shell:::{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}` |
-| Documents                    | `shell:::{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}` |
-| Downloads                    | `shell:::{374DE290-123F-4565-9164-39C4925E467B}` |
-| Frequent Places Folder       | `shell:::{3936E9E4-D92C-4EEE-A85A-BC16D5EA0819}` |
-| Library Folder               | `shell:::{a5a3563a-5755-4a6f-854e-afa3230b199f}` |
-| Quick access                 | `shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}` |
-| Recent Items Instance Folder | `shell:::{4564b25e-30cd-4787-82ba-39e73a750b14}` |
-| Recent Places Folder         | `shell:::{22877a6d-37a1-461a-91b0-dbda5aaebc99}` |
-| Recycle Bin                  | `shell:::{645FF040-5081-101B-9F08-00AA002F954E}` |
-| Search Everywhere            | `shell:::{2559a1f8-21d7-11d4-bdaf-00c04f60b9f0}` |
-| This PC                      | `shell:::{20D04FE0-3AEA-1069-A2D8-08002B30309D}` |
 
 ## For developers
 

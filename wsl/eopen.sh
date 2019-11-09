@@ -39,6 +39,7 @@ is_linux_path() {
   case $1 in ("~~" | "~~"[\\/]*) return 1; esac # Windows home path
   case $1 in ([\\/][\\/]*) return 1; esac # UNC or WSL path
   case $1 in (: | :[\\/]*) return 1; esac # Exploler Location
+  case $1 in (:*) return 1; esac # Shell special folder
   case $1 in (*:*)
     case ${1%%:*} in (*[!0-9a-zA-Z.+-]*) return 0; esac
     return 1; # protocol
@@ -96,12 +97,7 @@ case $1 in ("~~" | "~~"[\\/]*) # Windows home path
   set -- "$path${1#~~}"
 esac
 
-case $1 in (: | :[\\/]*) # Exploler Location
-  path=$(ebridge pwd)
-  set -- "$path${1#:}"
-esac
-
-if is_linux_path "$1"; then
+if [ "$1" ] && is_linux_path "$1"; then
   path=$(readlink -f "$1")
   check_${EDITOR:+edit_}path "$path" || abort "No such file or directory"
   if [ "$EDITOR" ] && [ ! -w "$1" ]; then

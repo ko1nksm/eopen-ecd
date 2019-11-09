@@ -8,45 +8,6 @@
 #import "SHELL32.dll" rename("ShellExecute", "_ShellExecute")
 
 namespace ebridge {
-	// This function returns only,
-	//  * URI (expept file:) [e.g. http://example.com]
-	//    * file: schema is converted to an absolute path
-	//  * Absolute path   [e.g. c:\example]
-	//  * UNC path        [e.g. \\wsl$\ubuntu]
-	std::wstring NormalizePath(std::wstring path) {
-		// URI (file:)
-		if (std::regex_match(path, std::wregex(L"file:.*"))) {
-			path = winapi::uri2path(path);
-		}
-
-		// Absolute Path with a drive letter
-		if (std::regex_match(path, std::wregex(L"[a-zA-Z]:.*"))) {
-			return util::normalize_path_separator(path);
-		}
-
-		// URI (expept file:)
-		if (std::regex_match(path, std::wregex(L"[a-zA-Z0-9.+-]+:.*"))) {
-			return path;
-		}
-
-		// UNC Path
-		if (std::regex_match(path, std::wregex(LR"([\\/][\\/].*)"))) {
-			return util::normalize_path_separator(path);
-		}
-
-		std::wstring cwd = std::filesystem::current_path();
-
-		// Absolute Path without drive letter
-		if (std::regex_match(path, std::wregex(LR"([\\/].*)"))) {
-			cwd.resize(cwd.find(L"\\")); // To append drive letter if exists
-			return util::normalize_path_separator(cwd + path);
-		}
-
-		// Relative path
-		if (cwd.back() == L'\\') cwd.pop_back();
-		return util::normalize_path_separator(cwd + L"\\" + path);
-	}
-
 	std::wstring AccessCheck(std::wstring path) {
 		// UNC that Host name only
 		if (std::regex_match(path, std::wregex(LR"([\\/][\\/][^\\]+(|\\))"))) {
@@ -120,7 +81,9 @@ namespace ebridge {
 		}
 
 		path = AccessCheck(NormalizePath(path));
-		explorer.Open(path);
+		if (path.size() > 0 && explorer.GetPath() != path) {
+			explorer.Open(path);
+		}
 
 		try {
 			if (path.length() > 0 && !std::filesystem::is_directory(path)) {
@@ -177,5 +140,62 @@ namespace ebridge {
 		if (explorer.Exists()) {
 			explorer.Close();
 		}
+	}
+
+	// This function returns only,
+	//  * URI (expept file:) [e.g. http://example.com]
+	//    * file: schema is converted to an absolute path
+	//  * Absolute path   [e.g. c:\example]
+	//  * UNC path        [e.g. \\wsl$\ubuntu]
+	std::wstring Shell::NormalizePath(std::wstring path) {
+		if (path.empty()) {
+			return path;
+		}
+
+		// URI (file:)
+		if (std::regex_match(path, std::wregex(L"file:.*"))) {
+			path = winapi::uri2path(path);
+		}
+
+		// Explorer Location
+		if (std::regex_match(path, std::wregex(LR"(:|:[\\/].*)"))) {
+			std::wstring wd = GetWorkingDirectory();
+			if (path.size() > 1) {
+				wd = std::regex_replace(wd, std::wregex(LR"(\\$)"), L"");
+			}
+			return wd + util::normalize_path_separator(path.substr(1));
+		}
+
+		// Shell special folder (shell: shorthand)
+		if (std::regex_match(path, std::wregex(LR"(:.*)"))) {
+			return L"shell" + path;
+		}
+
+		// Absolute Path with a drive letter
+		if (std::regex_match(path, std::wregex(L"[a-zA-Z]:.*"))) {
+			return util::normalize_path_separator(path);
+		}
+
+		// URI (expept file:)
+		if (std::regex_match(path, std::wregex(L"[a-zA-Z0-9.+-]+:.*"))) {
+			return path;
+		}
+
+		// UNC Path
+		if (std::regex_match(path, std::wregex(LR"([\\/][\\/].*)"))) {
+			return util::normalize_path_separator(path);
+		}
+
+		std::wstring cwd = std::filesystem::current_path();
+
+		// Absolute Path without drive letter
+		if (std::regex_match(path, std::wregex(LR"([\\/].*)"))) {
+			cwd.resize(cwd.find(L"\\")); // To append drive letter if exists
+			return util::normalize_path_separator(cwd + path);
+		}
+
+		// Relative path
+		if (cwd.back() == L'\\') cwd.pop_back();
+		return util::normalize_path_separator(cwd + L"\\" + path);
 	}
 }
