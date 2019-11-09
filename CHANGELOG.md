@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 0.9.0 - 2019-11-08
+## 0.9.0 - 2019-11-09
 ### Added
 - Implemented `eclose`, `epopd`
 - Added `EOPEN_LAUNCH_TO` environment variable

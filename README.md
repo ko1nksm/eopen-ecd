@@ -1,15 +1,22 @@
 # eopen-ecd
 
-eopen: Open Explorer from Terminal.
+eopen: Open Explorer from Terminal.<br>
 ecd: Change directory of Terminal and Explorer at once.
 
-## Supported Windows and Terminals
+## Supported Windows, Terminals
 
-* `Windows 10 64bit 1903` or later recommended,
-* Probably works on `Windows 7` (include 32bit) or later.
-* `WSL` / `WSL2` recommended for the terminal.
-* Supports `bash`, `zsh`, `ksh`, `mksh`, `yash`, `tcsh`, `fish`  for the shell in WSL.
-* Semi-support for `Powershell` and `Command Prompt`.
+### Windows
+
+  * *Windows 10 64bit 1903* or later recommended (`\\wsl$\` path is supported)
+  * At least *Windows 10 64bit 1803* is required for WSL (`wslpath` required)
+  * Probably works on *Windows 7* (includes 32bit) or later
+    * Of course, *PowerShell* and *Command Prompt* only
+
+### Terminals
+
+  * `WSL` / `WSL2` recommended for the terminal
+    * Works on `bash`, `zsh`, `ksh`, `mksh`, `yash`, `tcsh`, `fish`
+  * Semi-support for *PowerShell* and *Command Prompt*
 
 ## Usage
 
