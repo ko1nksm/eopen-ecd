@@ -27,7 +27,7 @@ abort() {
 escape() {
   while true; do
     case ${2:-} in
-      *\'*) set -- "$1" "${2#*\'}" "${3:-}${2%%\'*}\"'\"" ;;
+      *\'*) set -- "$1" "${2#*\'}" "${3:-}${2%%\'*}'\"'\"'" ;;
       *) eval "$1=\${3:-}\${2:-}"; break ;;
     esac
   done
@@ -95,7 +95,7 @@ for param; do
 done
 
 set -- "$cmd" "$@"
-printf "%s " "$@"
+printf "'%s' " "$@"
 
 [ "$skip" ] && exit
 eopen=${0%/*}/eopen.sh
