@@ -42,9 +42,9 @@ exit /b 0
 
   set value=%dir:~0,3%
   call :match :"\
-  if %ret% == match set ewd=yes & set dir=%dir:~2%
+  if %ret% == match set ewd=yes & set dir=%dir:~1%
   call :match :"/
-  if %ret% == match set ewd=yes & set dir=%dir:~2%
+  if %ret% == match set ewd=yes & set dir=%dir:~1%
 
   if %ewd% == yes call :ewd & exit /b
 
@@ -56,7 +56,6 @@ exit /b 0
   if not defined ewd exit /b 1
 
   set ewd="%ewd%"%dir%
-
   set /a count=0
   for /d %%i in (%ewd%) do set /a count=count+1
   if "%count%" == "1" set dir=%ewd% & exit /b
