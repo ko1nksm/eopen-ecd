@@ -3,6 +3,8 @@
 eopen: Open Explorer from Terminal.<br>
 ecd: Change directory of Terminal and Explorer at once.
 
+![demo](demo.gif)
+
 ## Supported Windows, Terminals
 
 ### Windows
