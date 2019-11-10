@@ -160,7 +160,7 @@ shell's profile under your home directory.
 #### For POSIX compliant shells
 
 ```sh
-eval "$(sh "/path/to/eopen/init.sh")"
+eval "$(sh "/path/to/eopen-ecd/init.sh")"
 ```
 
 [Profile] **bash:** `.bashrc`, **zsh:** `.zshrc`, **ksh:** `.kshrc`,
@@ -169,7 +169,7 @@ eval "$(sh "/path/to/eopen/init.sh")"
 #### For tcsh
 
 ```sh
-eval `sh "/path/to/eopen/init.sh" tcsh`
+eval `sh "/path/to/eopen-ecd/init.sh" tcsh`
 ```
 
 [Profile] **tcsh:** `.tcshrc`
@@ -177,7 +177,7 @@ eval `sh "/path/to/eopen/init.sh" tcsh`
 #### For fish
 
 ```sh
-eval (sh "/path/to/eopen/init.sh" fish)
+eval (sh "/path/to/eopen-ecd/init.sh" fish)
 ```
 
 [Profile] **fish:** `.config/fish/config.fish`
@@ -188,7 +188,7 @@ Change the following line to the appropriate path and add it to your
 PowerShell's profile.
 
 ```powershell
-. "/path/to/eopen/init.ps1"
+. "/path/to/eopen-ecd/init.ps1"
 ```
 
 To edit profile, type `notepad $PROFILE` in PowerShell.
@@ -203,7 +203,7 @@ Change the following line to the appropriate path and add it to `profile.bat`
 (or favorite name)
 
 ```batch
-@call \path\to\eopen\init.bat
+@call \path\to\eopen-ecd\init.bat
 ```
 
 Load it to Command Prompt. (For example, use `cmd /k profile.bat`)
