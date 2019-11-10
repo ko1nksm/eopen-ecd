@@ -2,7 +2,14 @@
 
 ## Unreleased
 
-## 0.9.0 - 2019-11-09
+## 0.9.1 - 2019-11-10
+### Changed
+- Do sudo first one time only with `eopen -e --sudo`
+### Fixed
+- Fixed path handling for command prompt
+- Various bug fixes
+
+## 0.9.0 - unreleased
 ### Added
 - Implemented `eclose`, `epopd`
 - Added `EOPEN_LAUNCH_TO` environment variable
