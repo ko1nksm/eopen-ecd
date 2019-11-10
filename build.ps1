@@ -11,7 +11,7 @@ function build($plartform) {
 
   $ebridge = "src\$plartform\Release\ebridge.exe"
   $version = (Get-Content src\version.h) -replace '^.*?"|".*?$',""
-  $name="eopen-$version-$plartform"
+  $name="eopen-ecd-$version-$plartform"
 
   Remove-Item "tmp\$name" -Recurse -ErrorAction Ignore
   New-Item "tmp\$name", "tmp\$name\bin" -ItemType Directory | Out-Null
