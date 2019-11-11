@@ -3,6 +3,12 @@
 set -eu
 
 BASE=$(cd "$(dirname "$0")"; pwd)
+UNAME=$(uname -s)
+
+case $(uname -s) in
+  CYGWIN* | MINGW* | MSYS*) system=cygwin ;;
+  *) system=wsl ;;
+esac
 
 cd "$BASE"
 if [ ! -x "bin/ebridge.exe" ]; then
@@ -27,36 +33,36 @@ case ${1:-sh} in
 
 (sh) cat<<HERE
 export EOPEN_ROOT='$BASE'
-alias eopen='sh "\$EOPEN_ROOT/wsl/eopen.sh"'
-alias eclose='sh "\$EOPEN_ROOT/wsl/eclose.sh"'
-alias ewd='sh "\$EOPEN_ROOT/wsl/ewd.sh"'
-alias ecd='. "\$EOPEN_ROOT/wsl/ecd.sh"'
+alias eopen='sh "\$EOPEN_ROOT/$system/eopen.sh"'
+alias eclose='sh "\$EOPEN_ROOT/$system/eclose.sh"'
+alias ewd='sh "\$EOPEN_ROOT/$system/ewd.sh"'
+alias ecd='. "\$EOPEN_ROOT/$system/ecd.sh"'
 if type pushd >/dev/null 2>&1; then
-  alias epushd='. "\$EOPEN_ROOT/wsl/epushd.sh"'
-  alias epopd='. "\$EOPEN_ROOT/wsl/epopd.sh"'
+  alias epushd='. "\$EOPEN_ROOT/$system/epushd.sh"'
+  alias epopd='. "\$EOPEN_ROOT/$system/epopd.sh"'
 fi
 HERE
 ;;
 
 (tcsh) cat<<HERE
 setenv EOPEN_ROOT '$BASE';
-alias eopen 'sh "\$EOPEN_ROOT/wsl/eopen.sh"';
-alias eclose 'sh "\$EOPEN_ROOT/wsl/eclose.sh"';
-alias ewd 'sh "\$EOPEN_ROOT/wsl/ewd.sh"';
-alias ecd 'source "\$EOPEN_ROOT/wsl/ecd.tcsh"';
-alias epushd 'source "\$EOPEN_ROOT/wsl/epushd.tcsh"';
-alias epopd 'source "\$EOPEN_ROOT/wsl/epopd.tcsh"';
+alias eopen 'sh "\$EOPEN_ROOT/$system/eopen.sh"';
+alias eclose 'sh "\$EOPEN_ROOT/$system/eclose.sh"';
+alias ewd 'sh "\$EOPEN_ROOT/$system/ewd.sh"';
+alias ecd 'source "\$EOPEN_ROOT/$system/ecd.tcsh"';
+alias epushd 'source "\$EOPEN_ROOT/$system/epushd.tcsh"';
+alias epopd 'source "\$EOPEN_ROOT/$system/epopd.tcsh"';
 HERE
 ;;
 
 (fish) cat<<HERE
 set EOPEN_ROOT '$BASE';
-alias eopen='sh "\$EOPEN_ROOT/wsl/eopen.sh"';
-alias eclose='sh "\$EOPEN_ROOT/wsl/eclose.sh"';
-alias ewd='sh "\$EOPEN_ROOT/wsl/ewd.sh"';
-alias ecd='source "\$EOPEN_ROOT/wsl/ecd.fish"';
-alias epushd='source "\$EOPEN_ROOT/wsl/epushd.fish"';
-alias epopd='source "\$EOPEN_ROOT/wsl/epopd.fish"';
+alias eopen='sh "\$EOPEN_ROOT/$system/eopen.sh"';
+alias eclose='sh "\$EOPEN_ROOT/$system/eclose.sh"';
+alias ewd='sh "\$EOPEN_ROOT/$system/ewd.sh"';
+alias ecd='source "\$EOPEN_ROOT/$system/ecd.fish"';
+alias epushd='source "\$EOPEN_ROOT/$system/epushd.fish"';
+alias epopd='source "\$EOPEN_ROOT/$system/epopd.fish"';
 HERE
 ;;
 

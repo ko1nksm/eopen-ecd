@@ -10,7 +10,13 @@ options:
   -e, --editor      Open the file in text editor. Set the editor path to
                       EOPEN_EDITOR environment variable on Windows.
   -n, --new         Open the specified directory in new instance of explorer.
+HERE
+if [ "$ENABLE_SUDO" ]; then
+  cat <<'HERE'
       --sudo        Use sudo to edit the unowned file.
+HERE
+fi
+  cat <<'HERE'
   -g, --background  Does not bring the application to the foreground.
   -v, --version     Display the version.
   -h, --help        You're looking at it.
@@ -56,15 +62,21 @@ check_edit_path() {
 
 EDITOR='' NEW='' SUDO='' FLAGS=''
 
+ENABLE_SUDO=''
+if type sudo > /dev/null 2>&1; then
+  ENABLE_SUDO=1
+fi
+
+unknown() { abort "unrecognized option '$1'";  }
 for arg; do
   case $arg in
     -e | --editor    ) EDITOR=1 ;;
     -n | --new       ) NEW=1 ;;
-         --sudo      ) SUDO=1 ;;
+         --sudo      ) [ "$ENABLE_SUDO" ] || unknown "$@"; SUDO=1 ;;
     -g | --background) FLAGS="${FLAGS}b" ;;
     -v | --version   ) ebridge version; exit ;;
     -h | --help      ) usage ;;
-    -?*) abort "unrecognized option '$arg'" ;;
+    -?*) unknown "$@" ;;
     *) set -- "$@" "$arg"
   esac
   shift

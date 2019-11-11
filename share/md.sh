@@ -2,9 +2,6 @@
 
 set -eu
 
-. "$EOPEN_ROOT/$1/path.sh"
-shift
-
 abort() {
   [ $# -gt 0 ] && printf 'ewd: %s\n' "$1" >&2
   echo false
@@ -47,8 +44,10 @@ ewd() {
   wpath "$ewd"
 }
 
-sh=$1 cmd=$2 stop='' skip=''
-shift 2
+system=$1 sh=$2 cmd=$3 stop='' skip=''
+shift 3
+
+. "$EOPEN_ROOT/$system/path.sh"
 
 for param; do
   case ${stop:+-}$param in
@@ -85,7 +84,7 @@ set -- "$cmd" "$@"
 printf "%s " "$@"
 
 [ "$skip" ] && exit
-eopen=$EOPEN_ROOT/wsl/eopen.sh
+eopen=$EOPEN_ROOT/$system/eopen.sh
 escape eopen "$eopen"
 if [ "$sh" = "fish" ]; then
   printf "; and sh '%s' -g ." "$eopen"
