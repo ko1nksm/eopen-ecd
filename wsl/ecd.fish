@@ -1,1 +1,1 @@
-eval (sh "$EOPEN_ROOT/wsl/md.sh" fish cd $argv)
+eval (sh "$EOPEN_ROOT/share/md.sh" wsl fish cd $argv)

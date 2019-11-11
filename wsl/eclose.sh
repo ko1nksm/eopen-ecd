@@ -2,5 +2,4 @@
 
 set -eu
 
-cd "$EOPEN_ROOT"
-bin/ebridge.exe close
+. "$EOPEN_ROOT/share/close.sh"

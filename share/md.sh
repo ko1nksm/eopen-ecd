@@ -2,21 +2,8 @@
 
 set -eu
 
-list() {
-  set --
-  i=1
-  while [ $i -lt 32 ]; do
-    set -- "$@" 128 $((i + 128)) "$i"
-    i=$((i+1))
-  done
-  set -- "$@" 128 162 34  128 170 42  128 186 58  128 188 60
-  set -- "$@" 128 190 62  128 191 63  129 156 92  129 188 124
-  printf 's!\xEF\x%X\x%X!\x%X!g\n' "$@"
-}
-
-wslpath() {
-  command wslpath "$@" | sed "$(list)"
-}
+. "$EOPEN_ROOT/$1/path.sh"
+shift
 
 abort() {
   [ $# -gt 0 ] && printf 'ewd: %s\n' "$1" >&2
@@ -34,7 +21,7 @@ escape() {
 }
 
 wpath() {
-  if [ "$1" ] && dest=$(wslpath -u "$1" 2>/dev/null); then
+  if [ "$1" ] && dest=$(to_linpath "$1" 2>/dev/null); then
     printf '%s' "$dest"
     return 0
   fi
@@ -98,7 +85,7 @@ set -- "$cmd" "$@"
 printf "%s " "$@"
 
 [ "$skip" ] && exit
-eopen=${0%/*}/eopen.sh
+eopen=$EOPEN_ROOT/wsl/eopen.sh
 escape eopen "$eopen"
 if [ "$sh" = "fish" ]; then
   printf "; and sh '%s' -g ." "$eopen"
