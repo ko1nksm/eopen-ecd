@@ -3,7 +3,8 @@
 #include <string>
 #include <filesystem>
 #include <comdef.h>
-#include "shell.h"
+#include "Console.h"
+#include "Shell.h"
 #include "util.h"
 #include "version.h"
 #include "winapi.h"
@@ -18,6 +19,9 @@ int do_usage(std::wstring prog) {
 }
 
 int do_open(std::vector<std::wstring> params) {
+	Console console;
+	console.SetTopMost(true);
+
 	Shell shell;
 	std::wstring path = params.size() >= 1 ? params[0] : L"";
 	std::wstring flags = params.size() >= 2 ? params[1] : L"";

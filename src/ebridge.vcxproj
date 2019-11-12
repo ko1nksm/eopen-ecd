@@ -251,6 +251,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="ebridge.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="Explorer.cpp" />
@@ -258,6 +259,7 @@
     <ClCompile Include="winapi.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Console.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Explorer.h" />
     <ClInclude Include="version.h" />

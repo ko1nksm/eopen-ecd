@@ -46,25 +46,10 @@ namespace winapi {
 
 	void show_window(long handle)
 	{
-		std::wstring title = winapi::get_console_title();
-		int pid = winapi::get_current_process_id();
-		std::wstring uniq_title = title + L" - " + std::to_wstring(pid);
-		winapi::set_console_title(uniq_title);
-
-		HWND console = 0;
-		for (int i = 0; i < 100; i++) {
-			::Sleep(1);
-			console = FindWindow(NULL, uniq_title.c_str());
-			if (console != NULL) break;
-		}
-
-		::SetWindowPos(console, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 		auto hwnd = (HWND)LongToHandle(handle);
 		::ShowWindow(hwnd, SW_SHOWNOACTIVATE);
-		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-		::SetWindowPos(console, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-		set_console_title(title);
+		set_topmost_window(handle, true);
+		set_topmost_window(handle, false);
 	}
 
 	void active_window(long handle)
@@ -72,8 +57,51 @@ namespace winapi {
 		auto hwnd = (HWND)LongToHandle(handle);
 		::ShowWindow(hwnd, SW_RESTORE);
 		::SetForegroundWindow(hwnd);
-		::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+		set_topmost_window(handle, true);
+		set_topmost_window(handle, false);
+	}
+
+	long find_console_window() {
+		std::wstring title = get_console_title();
+		int pid = get_current_process_id();
+		std::wstring uniq_title = title + L" - " + std::to_wstring(pid);
+		set_console_title(uniq_title);
+
+		HWND handle = 0;
+		for (int i = 0; i < 100; i++) {
+			::Sleep(1);
+			handle = ::FindWindow(NULL, uniq_title.c_str());
+			if (handle != NULL) break;
+		}
+		set_console_title(title);
+		return HandleToLong(handle);
+	}
+
+	std::wstring get_window_text(long handle) {
+		auto hwnd = (HWND)LongToHandle(handle);
+		int len = GetWindowTextLength(hwnd);
+		if (len == 0) return L"";
+		std::vector<wchar_t> buffer((size_t)len + 1);
+		::GetWindowText(hwnd, buffer.data(), len + 1);
+		return std::basic_string<wchar_t>(buffer.begin(), buffer.end());
+	}
+
+	void set_topmost_window(long handle, bool topmost) {
+		auto hwnd = (HWND)LongToHandle(handle);
+		if (topmost) {
+			UINT flags = SWP_NOMOVE | SWP_NOSIZE;
+			::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, flags);
+		}
+		else {
+			UINT flags = SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE;
+			::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, flags);
+		}
+	}
+
+	bool is_topmost_window(long handle)
+	{
+		int style = ::GetWindowLong((HWND)LongToHandle(handle), GWL_EXSTYLE);
+		return (style & WS_EX_TOPMOST) == WS_EX_TOPMOST;
 	}
 
 	long get_main_window_handle(const long pid) {
@@ -170,8 +198,8 @@ namespace winapi {
 	std::wstring get_console_title()
 	{
 		wchar_t ch;
-		int const size = ::GetConsoleTitle(&ch, 1);
-		if (size == 0) return L"";
+		int const size = ::GetConsoleTitle(&ch, 1) + 1;
+		if (size == 1) return L"";
 		wchar_t* dest = new wchar_t[size];
 		if (::GetConsoleTitle(dest, size) == 0) {
 			throw win32_error(::GetLastError());
@@ -202,7 +230,7 @@ namespace winapi {
 			if (wcscmp(process.szExeFile, name.c_str()) != 0) continue;
 			process_entry entry;
 			entry.process_id = process.th32ProcessID;
-			entry.window_handle = winapi::get_main_window_handle(process.th32ProcessID);
+			entry.window_handle = get_main_window_handle(process.th32ProcessID);
 			entry.window_text_length = ::GetWindowTextLength((HWND)LongToHandle(entry.window_handle));
 			entries.push_back(entry);
 		} while (::Process32Next(handle, &process));

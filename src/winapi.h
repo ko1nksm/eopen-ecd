@@ -37,6 +37,10 @@ namespace winapi {
 	void show_window(long handle);
 	void active_window(long handle);
 	long get_main_window_handle(const long pid);
+	long find_console_window();
+	void set_topmost_window(long handle, bool topmost);
+	bool is_topmost_window(long handle);
+	std::wstring get_window_text(long handle);
 
 	std::string wide2multi(std::wstring const& str, unsigned int codepage);
 	std::wstring multi2wide(std::string const& str, unsigned int codepage);
