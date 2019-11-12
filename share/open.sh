@@ -122,7 +122,8 @@ fi
 func=open
 [ "$NEW" ] && func=new
 [ "$EDITOR" ] && func=edit
-ebridge "$func" "$1" "$FLAGS"
+printf '\033]0;%s\a' "eopen: $$"
+ebridge "$func" "$1" "$FLAGS" "eopen: $$"
 
 if [ "$SUDO" ]; then
   echo "Press CTRL-C to stop when finished editing the file"

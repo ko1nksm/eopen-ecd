@@ -3,12 +3,11 @@ namespace ebridge {
 	class Console
 	{
 	public:
-		Console();
+		Console(std::wstring title);
 		void SetTopMost(bool enabled);
 		~Console();
 	private:
-		long handle;
+		long handle = 0;
 		bool initial_topmost;
 	};
 };
-

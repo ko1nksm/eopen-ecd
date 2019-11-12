@@ -19,12 +19,13 @@ int do_usage(std::wstring prog) {
 }
 
 int do_open(std::vector<std::wstring> params) {
-	Console console;
-	console.SetTopMost(true);
-
-	Shell shell;
 	std::wstring path = params.size() >= 1 ? params[0] : L"";
 	std::wstring flags = params.size() >= 2 ? params[1] : L"";
+	std::wstring title = params.size() >= 3 ? params[2] : L"";
+
+	Console console(title);
+	console.SetTopMost(true);
+	Shell shell;
 	bool background = util::exists_flag(flags, L"b");
 	shell.Open(path, background);
 	return 0;
