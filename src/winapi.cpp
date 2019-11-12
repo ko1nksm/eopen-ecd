@@ -77,6 +77,18 @@ namespace winapi {
 		return HandleToLong(handle);
 	}
 
+	BOOL CALLBACK enum_windows_proc(HWND hwnd, LPARAM lp) {
+		auto handles = (std::vector<long>*)lp;
+		handles->push_back(HandleToLong(hwnd));
+		return true;
+	}
+
+	std::vector<long> enum_windows() {
+		std::vector<long> handles;
+		EnumWindows(enum_windows_proc, (LPARAM)&handles);
+		return handles;
+	}
+
 	std::wstring get_window_text(long handle) {
 		auto hwnd = (HWND)LongToHandle(handle);
 		int len = GetWindowTextLength(hwnd);

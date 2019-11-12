@@ -41,6 +41,7 @@ namespace winapi {
 	void set_topmost_window(long handle, bool topmost);
 	bool is_topmost_window(long handle);
 	std::wstring get_window_text(long handle);
+	std::vector<long> enum_windows();
 
 	std::string wide2multi(std::wstring const& str, unsigned int codepage);
 	std::wstring multi2wide(std::string const& str, unsigned int codepage);
