@@ -90,12 +90,12 @@ done
 
 for param; do
   escape param "$param"
-  set -- "$@" "$param"
+  set -- "$@" "'$param'"
   shift
 done
 
 set -- "$cmd" "$@"
-printf "'%s' " "$@"
+printf "%s " "$@"
 
 [ "$skip" ] && exit
 eopen=${0%/*}/eopen.sh
