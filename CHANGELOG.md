@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+## 0.10.0 - 2019-11-14
 ### Added
 - Support cygwin, msys2 and git bash
 - Added `-u`, `-w`, `-m` option for `ewd`
