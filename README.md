@@ -24,16 +24,18 @@ ecd: Change directory of Terminal and Explorer at once.
 
 ### Available commands
 
-|                | eopen | eclose |  ewd  |  ecd  | epushd | epopd |
-| -------------- | :---: | :----: | :---: | :---: | :----: | :---: |
-| WSL            |   o   |   o    |   o   |   o   |   o    |   o   |
-| PowerShell     |   -   |   -    |   o   |   o   |   o    |   o   |
-| Command Prompt |   -   |   -    |   o   |   o   |   o    |   o   |
+|                | eopen | eclose |  ewd  |  ecd  | epushd | epopd | elsi  |
+| -------------- | :---: | :----: | :---: | :---: | :----: | :---: | :---: |
+| WSL            |   o   |   o    |   o   |   o   |   o    |   o   |   o   |
+| PowerShell     |   -   |   -    |   o   |   o   |   o    |   o   |   o   |
+| Command Prompt |   -   |   -    |   o   |   o   |   o    |   o   |   o   |
 
 **Note** Currently, `eopen` and `eclose` are not implemented for
 PowerShell / Command Prompt. Use `explorer.exe` instead.
 
 ### eopen
+
+`Usage: eopen [ -e | --editor ] [ -n | --new ] [ --sudo ] [ -g | --background ] [ -v | --version ] [ -h | --help ]`
 
 * Open the directory with Explorer from the Terminal.
 * Open the file with application from the Terminal.
@@ -88,13 +90,19 @@ eopen :/workspace               # Relative path from current Explorer location
 
 ### eclose
 
+`Usage: eclose`
+
 Close the (lastest used) Explorer.
 
 ### ewd
 
+`Usage: ewd [ -u | --unix ] [ -w | --windows ] [ -m | --mixed ]`
+
 Display path of the (latest used) Explorer location.
 
 ### ecd
+
+`Usage: ecd <directory>`
 
 Change the directory of Terminal and Explorer at once.
 
@@ -128,10 +136,19 @@ ecd ./~~
 
 ### epushd / popd
 
+`Usage: epushd <directory>` <br>
+`Usage: epopd`
+
 Push or pop a directory to the directory stack stack, And Change the directory
 of Terminal and Explorer at once. (Use `push` instead of `cd`.)
 
-**Note** Not available on `ksh` and `mksh`, since `push` is not implemented.
+**Note** Not available on `ksh` and `mksh`, since `push` and `pop` are not implemented.
+
+### elsi
+
+`Usage: elsi [ -u | --unix ] [ -w | --windows ] [ -m | --mixed ]`
+
+List selected items of the Explorer.
 
 ## Download
 
@@ -154,7 +171,7 @@ Extract the zip file to any directory and set to your shell's profile.
 *Explorer* -> *File* -> *Change folder and search options* -> *View*
 -> *Advanced settings*.
 
-### WSL terminal
+### WSL terminal / Cygwin / MSYS2 / Git for Windows
 
 Change the following line to the appropriate path and add it to your
 shell's profile under your home directory.

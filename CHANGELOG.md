@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+### Added
+- Support cygwin, msys2 and git bash
+- Added `-u`, `-w`, `-m` option for `ewd`
+- Added `elsi` command to list selected items
+### Fixed
+- Fixed broken `ecd`, `epush` for tcsh
 
 ## 0.9.1 - 2019-11-10
 ### Changed
