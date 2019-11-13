@@ -66,8 +66,15 @@ int do_list_selected_items(std::vector<std::wstring> params) {
 int do_pwd(std::vector<std::wstring> params) {
 	Shell shell;
 	std::wstring codepage = params.size() >= 1 ? params[0] : L"";
+	std::wstring flags = params.size() >= 2 ? params[1] : L"";
+	bool mixed = util::exists_flag(flags, L"m");
+
 	std::wstring dir = shell.GetWorkingDirectory();
 	if (dir.empty()) return 0;
+
+	if (mixed) {
+		dir = util::to_mixed_path(dir);
+	}
 
 	if (codepage.empty()) {
 		std::wcout << dir;

@@ -21,6 +21,11 @@ std::wstring util::normalize_path_separator(std::wstring path) {
 	return std::regex_replace(path, std::wregex(L"/"), L"\\");
 }
 
+std::wstring util::to_mixed_path(std::wstring path) {
+	return std::regex_replace(path, std::wregex(L"\\\\"), L"/");
+}
+
+
 bool util::exists_flag(std::wstring flags, std::wstring flag)
 {
 	return (flags.find(flag) != std::string::npos);
