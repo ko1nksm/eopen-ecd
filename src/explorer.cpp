@@ -53,18 +53,17 @@ namespace ebridge {
 
 	}
 
-	void Explorer::SelectedItems(bool mixed)
+	std::vector<std::wstring> Explorer::SelectedItems()
 	{
 		auto view = (Shell32::IShellFolderViewDual2Ptr)window->GetDocument();
 		auto items = view->SelectedItems();
+		std::vector<std::wstring> ret;
 		for (long i = 0; i < items->GetCount(); i++) {
 			Shell32::FolderItem2Ptr item(items->Item(i));
 			std::wstring path = (BSTR)item->GetPath();
-			if (mixed) {
-				path = std::regex_replace(path, std::wregex(L"\\\\"), L"/");
-			}
-			std::wcout << path << std::endl;
+			ret.push_back(path);
 		}
+		return ret;
 	}
 
 	long Explorer::GetHandle()

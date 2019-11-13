@@ -142,10 +142,10 @@ namespace ebridge {
 		}
 	}
 
-	void Shell::SelectedItems(bool mixed) {
+	std::vector<std::wstring> Shell::SelectedItems() {
 		auto explorer = GetActiveExplorer();
 
-		explorer.SelectedItems(mixed);
+		return explorer.SelectedItems();
 	}
 
 	// This function returns only,

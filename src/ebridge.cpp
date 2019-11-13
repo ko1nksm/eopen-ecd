@@ -59,7 +59,13 @@ int do_list_selected_items(std::vector<std::wstring> params) {
 	Shell shell;
 	std::wstring flags = params.size() >= 1 ? params[0] : L"";
 	bool mixed = util::exists_flag(flags, L"m");
-	shell.SelectedItems(mixed);
+	auto items = shell.SelectedItems();
+	for (auto item : items) {
+		if (mixed) {
+			item = util::to_mixed_path(item);
+		}
+		std::wcout << item << std::endl;
+	}
 	return 0;
 }
 
