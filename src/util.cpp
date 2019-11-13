@@ -4,6 +4,14 @@
 #include <io.h>
 #include "util.h"
 
+util::active_explorer_not_found::active_explorer_not_found() :
+	std::runtime_error(
+		"Explorer is not running. "
+		"(Is \"Launch folder windows in a separete process\" enabled?)"
+	)
+{
+}
+
 std::wstring util::getenv(std::wstring name, std::wstring default_value)
 {
 	wchar_t* buf = nullptr;

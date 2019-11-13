@@ -65,9 +65,7 @@ namespace ebridge {
 	std::wstring Shell::GetWorkingDirectory() {
 		auto explorer = GetActiveExplorer();
 		if (!explorer.Exists()) {
-			throw std::runtime_error(
-				"Explorer is not running. "
-				"(Is \"Launch folder windows in a separete process\" enabled?)");
+			throw util::active_explorer_not_found();
 		}
 		return explorer.GetPath();
 	}
@@ -144,7 +142,9 @@ namespace ebridge {
 
 	std::vector<std::wstring> Shell::SelectedItems() {
 		auto explorer = GetActiveExplorer();
-
+		if (!explorer.Exists()) {
+			throw util::active_explorer_not_found();
+		}
 		return explorer.SelectedItems();
 	}
 

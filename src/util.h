@@ -3,6 +3,11 @@
 
 namespace util {
 	class silent_error {};
+	class active_explorer_not_found : public std::runtime_error
+	{
+	public:
+		active_explorer_not_found();
+	};
 
 	std::wstring getenv(std::wstring name, std::wstring default_value = L"");
 	std::wstring normalize_path_separator(std::wstring path);
