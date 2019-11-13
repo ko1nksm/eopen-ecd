@@ -12,6 +12,7 @@ namespace ebridge {
 		std::wstring GetPath();
 		void Open(std::wstring path);
 		void Close();
+		void SelectedItems(bool mixed);
 		long GetHandle();
 
 	private:

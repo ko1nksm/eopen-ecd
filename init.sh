@@ -41,6 +41,7 @@ if type pushd >/dev/null 2>&1; then
   alias epushd='. "\$EOPEN_ROOT/$system/epushd.sh"'
   alias epopd='. "\$EOPEN_ROOT/$system/epopd.sh"'
 fi
+alias elsi='sh "\$EOPEN_ROOT/$system/elsi.sh"'
 HERE
 ;;
 
@@ -52,6 +53,7 @@ alias ewd 'sh "\$EOPEN_ROOT/$system/ewd.sh"';
 alias ecd 'source "\$EOPEN_ROOT/$system/ecd.tcsh"';
 alias epushd 'source "\$EOPEN_ROOT/$system/epushd.tcsh"';
 alias epopd 'source "\$EOPEN_ROOT/$system/epopd.tcsh"';
+alias elsi 'sh "\$EOPEN_ROOT/$system/elsi.sh"';
 HERE
 ;;
 
@@ -63,6 +65,7 @@ alias ewd='sh "\$EOPEN_ROOT/$system/ewd.sh"';
 alias ecd='source "\$EOPEN_ROOT/$system/ecd.fish"';
 alias epushd='source "\$EOPEN_ROOT/$system/epushd.fish"';
 alias epopd='source "\$EOPEN_ROOT/$system/epopd.fish"';
+alias elsi='sh "\$EOPEN_ROOT/$system/elsi.sh"';
 HERE
 ;;
 

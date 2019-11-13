@@ -10,6 +10,7 @@ namespace ebridge {
 		void New(std::wstring path, bool background = false);
 		void Edit(std::wstring path, bool background = false);
 		void Close();
+		void SelectedItems(bool mixed);
 	private:
 		std::wstring NormalizePath(std::wstring path);
 	};

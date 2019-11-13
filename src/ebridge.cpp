@@ -55,6 +55,14 @@ int do_close(std::vector<std::wstring> params) {
 	return 0;
 }
 
+int do_list_selected_items(std::vector<std::wstring> params) {
+	Shell shell;
+	std::wstring flags = params.size() >= 1 ? params[0] : L"";
+	bool mixed = util::exists_flag(flags, L"m");
+	shell.SelectedItems(mixed);
+	return 0;
+}
+
 int do_pwd(std::vector<std::wstring> params) {
 	Shell shell;
 	std::wstring codepage = params.size() >= 1 ? params[0] : L"";
@@ -125,6 +133,7 @@ int process(int argc, wchar_t* argv[]) {
 		if (func == L"new")     return do_new(params);
 		if (func == L"edit")    return do_edit(params);
 		if (func == L"close")   return do_close(params);
+		if (func == L"lsi")     return do_list_selected_items(params);
 		if (func == L"pwd")     return do_pwd(params);
 		if (func == L"chcp")    return do_chcp(params);
 		if (func == L"env")     return do_env(params);

@@ -1,6 +1,8 @@
-﻿#include "explorer.h"
+﻿#include <regex>
+#include "explorer.h"
 #include "util.h"
 #include "winapi.h"
+#import "SHELL32.dll" rename("ShellExecute", "_ShellExecute")
 
 namespace ebridge {
 	Explorer::Explorer() : Explorer(nullptr) {}
@@ -49,6 +51,20 @@ namespace ebridge {
 			throw e;
 		}
 
+	}
+
+	void Explorer::SelectedItems(bool mixed)
+	{
+		auto view = (Shell32::IShellFolderViewDual2Ptr)window->GetDocument();
+		auto items = view->SelectedItems();
+		for (long i = 0; i < items->GetCount(); i++) {
+			Shell32::FolderItem2Ptr item(items->Item(i));
+			std::wstring path = (BSTR)item->GetPath();
+			if (mixed) {
+				path = std::regex_replace(path, std::wregex(L"\\\\"), L"/");
+			}
+			std::wcout << path << std::endl;
+		}
 	}
 
 	long Explorer::GetHandle()

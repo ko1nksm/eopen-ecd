@@ -9,6 +9,7 @@ doskey ewd="%EOPEN_ROOT%\cmd\ewd.bat" $*
 doskey ecd="%EOPEN_ROOT%\cmd\ecd.bat" $*
 doskey epushd="%EOPEN_ROOT%\cmd\epushd.bat" $*
 doskey epopd="%EOPEN_ROOT%\cmd\epopd.bat" $*
+doskey elsi="%EOPEN_ROOT%\cmd\elsi.bat" $*
 
 goto :eof
 

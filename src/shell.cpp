@@ -142,6 +142,12 @@ namespace ebridge {
 		}
 	}
 
+	void Shell::SelectedItems(bool mixed) {
+		auto explorer = GetActiveExplorer();
+
+		explorer.SelectedItems(mixed);
+	}
+
 	// This function returns only,
 	//  * URI (expept file:) [e.g. http://example.com]
 	//    * file: schema is converted to an absolute path
