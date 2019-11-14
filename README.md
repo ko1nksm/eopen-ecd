@@ -146,7 +146,7 @@ of Terminal and Explorer at once. (Use `push` instead of `cd`.)
 
 ### elsi
 
-`Usage: elsi [ -u | --unix ] [ -w | --windows ] [ -m | --mixed ]`
+`Usage: elsi [ -u | --unix ] [ -w | --windows ] [ -m | --mixed ] [ -0 | --null]`
 
 List selected items of the Explorer.
 
