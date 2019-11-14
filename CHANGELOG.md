@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+## 0.10.1 - 2019-11-15
+### Added
+- Added `-0`, option for `elsi`
+### Fixed
+- Various bug fixes for PowerShell and Command Prompt
+
 ## 0.10.0 - 2019-11-14
 ### Added
 - Support cygwin, msys2 and git bash
