@@ -71,7 +71,7 @@ int do_list_selected_items(std::vector<std::wstring> params) {
 
 int do_pwd(std::vector<std::wstring> params) {
 	Shell shell;
-	std::wstring codepage = params.size() >= 1 ? params[0] : L"";
+	std::wstring codepage = params.size() >= 1 ? params[0] : L"unicode";
 	std::wstring flags = params.size() >= 2 ? params[1] : L"";
 	bool mixed = util::exists_flag(flags, L"m");
 
@@ -82,7 +82,7 @@ int do_pwd(std::vector<std::wstring> params) {
 		dir = util::to_mixed_path(dir);
 	}
 
-	if (codepage.empty()) {
+	if (codepage == L"unicode") {
 		std::wcout << dir;
 		return 0;
 	}

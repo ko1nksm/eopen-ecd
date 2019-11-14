@@ -4,5 +4,5 @@ setlocal
 set option=
 if "%1" == "-m" set option=m
 if "%1" == "--mixed" set option=m
-"%EOPEN_ROOT%\bin\ebridge.exe" pwd auto %option%
+"%EOPEN_ROOT%\bin\ebridge.exe" pwd unicode %option%
 endlocal

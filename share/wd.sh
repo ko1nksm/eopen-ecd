@@ -32,7 +32,7 @@ abort() {
 
 ewd=$(
   cd "$EOPEN_ROOT" || exit 1
-  bin/ebridge.exe pwd auto "$options"
+  bin/ebridge.exe pwd unicode "$options"
 ) || abort
 
 if [ "$unix" ]; then
