@@ -55,11 +55,16 @@ exit /b 0
   for /f "usebackq tokens=*" %%i IN (`"%ebridge%" pwd auto`) do set ewd=%%i
   if not defined ewd exit /b 1
 
+  set value=%ewd:~-1,1%
+  call :match ?
+  if %ret% == match goto :fallback
+
   set ewd="%ewd%"%dir%
   set /a count=0
   for /d %%i in (%ewd%) do set /a count=count+1
   if "%count%" == "1" set dir=%ewd% & exit /b
 
+:fallback
   rem Fallback when matching multiple unicode paths.
   rem Characters that are invalid in the current code page are replaced with '?'.
   rem Therefore, multiple folders may match. So switch the code page temporary.
