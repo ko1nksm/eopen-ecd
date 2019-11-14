@@ -17,7 +17,8 @@ cd "$(dirname "$0")"
 
 echo "This will create a test directory under '$PWD/test_dirs'"
 echo "Press enter key to continue . . ."
-read line
+# shellcheck disable=SC2034
+read -r line
 
 make_dir() {
   dir=$(printf 'test_dirs/%s' "$1")

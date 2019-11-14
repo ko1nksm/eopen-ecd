@@ -3,7 +3,6 @@
 set -eu
 
 BASE=$(cd "$(dirname "$0")"; pwd)
-UNAME=$(uname -s)
 
 case $(uname -s) in
   CYGWIN* | MINGW* | MSYS*) system=cygwin ;;

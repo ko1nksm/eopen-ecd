@@ -47,6 +47,7 @@ ewd() {
 system=$1 sh=$2 cmd=$3 stop='' skip=''
 shift 3
 
+# shellcheck source=/dev/null
 . "$EOPEN_ROOT/$system/path.sh"
 
 for param; do
