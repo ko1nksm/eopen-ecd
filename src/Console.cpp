@@ -6,7 +6,7 @@ ebridge::Console::Console(std::wstring title)
 {
 	if (title.size() > 0) {
 		for (auto h : winapi::enum_windows()) {
-			std::wstring text = winapi::get_window_text(h);
+			auto text = winapi::get_window_text(h);
 			if (text.find(title) == std::string::npos) continue;
 			handle = h;
 			break;

@@ -19,9 +19,9 @@ int do_usage(std::wstring prog) {
 }
 
 int do_open(std::vector<std::wstring> params) {
-	std::wstring path = params.size() >= 1 ? params[0] : L"";
-	std::wstring flags = params.size() >= 2 ? params[1] : L"";
-	std::wstring title = params.size() >= 3 ? params[2] : L"";
+	auto path = params.size() >= 1 ? params[0] : L"";
+	auto flags = params.size() >= 2 ? params[1] : L"";
+	auto title = params.size() >= 3 ? params[2] : L"";
 
 	Console console(title);
 	console.SetTopMost(true);
@@ -32,18 +32,20 @@ int do_open(std::vector<std::wstring> params) {
 }
 
 int do_new(std::vector<std::wstring> params) {
+	auto path = params.size() >= 1 ? params[0] : L"";
+	auto flags = params.size() >= 2 ? params[1] : L"";
+
 	Shell shell;
-	std::wstring path = params.size() >= 1 ? params[0] : L"";
-	std::wstring flags = params.size() >= 2 ? params[1] : L"";
 	bool background = util::exists_flag(flags, L"b");
 	shell.New(path, background);
 	return 0;
 }
 
 int do_edit(std::vector<std::wstring> params) {
+	auto path = params.size() >= 1 ? params[0] : L"";
+	auto flags = params.size() >= 2 ? params[1] : L"";
+
 	Shell shell;
-	std::wstring path = params.size() >= 1 ? params[0] : L"";
-	std::wstring flags = params.size() >= 2 ? params[1] : L"";
 	bool background = util::exists_flag(flags, L"b");
 	shell.Edit(path, background);
 	return 0;
@@ -55,9 +57,10 @@ int do_close(std::vector<std::wstring> params) {
 	return 0;
 }
 
-int do_list_selected_items(std::vector<std::wstring> params) {
+int do_lsi(std::vector<std::wstring> params) {
+	auto flags = params.size() >= 1 ? params[0] : L"";
+
 	Shell shell;
-	std::wstring flags = params.size() >= 1 ? params[0] : L"";
 	bool mixed = util::exists_flag(flags, L"m");
 	auto items = shell.SelectedItems();
 	for (auto item : items) {
@@ -70,14 +73,14 @@ int do_list_selected_items(std::vector<std::wstring> params) {
 }
 
 int do_pwd(std::vector<std::wstring> params) {
-	Shell shell;
-	std::wstring codepage = params.size() >= 1 ? params[0] : L"unicode";
-	std::wstring flags = params.size() >= 2 ? params[1] : L"";
-	bool mixed = util::exists_flag(flags, L"m");
+	auto codepage = params.size() >= 1 ? params[0] : L"unicode";
+	auto flags = params.size() >= 2 ? params[1] : L"";
 
-	std::wstring dir = shell.GetWorkingDirectory();
+	Shell shell;
+	auto dir = shell.GetWorkingDirectory();
 	if (dir.empty()) return 0;
 
+	bool mixed = util::exists_flag(flags, L"m");
 	if (mixed) {
 		dir = util::to_mixed_path(dir);
 	}
@@ -104,9 +107,9 @@ int do_pwd(std::vector<std::wstring> params) {
 }
 
 int do_chcp(std::vector<std::wstring> params) {
-	std::wstring codepage = params.size() >= 1 ? params[0] : L"0";
-	int cp = 0;
+	auto codepage = params.size() >= 1 ? params[0] : L"0";
 
+	unsigned int cp = 0;
 	try {
 		cp = std::stoi(codepage);
 	}
@@ -114,13 +117,13 @@ int do_chcp(std::vector<std::wstring> params) {
 		throw winapi::win32_error_invalid_parameter();
 	}
 
-	unsigned int previous_cp = winapi::set_console_output_codepage(cp);
+	auto previous_cp = winapi::set_console_output_codepage(cp);
 	std::wcout << previous_cp;
 	return 0;
 }
 
 int do_env(std::vector<std::wstring> params) {
-	std::wstring name = params.size() >= 1 ? params[0] : L"";
+	auto name = params.size() >= 1 ? params[0] : L"";
 	std::wcout << util::getenv(name);
 	return 0;
 }
@@ -146,7 +149,7 @@ int process(int argc, wchar_t* argv[]) {
 		if (func == L"new")     return do_new(params);
 		if (func == L"edit")    return do_edit(params);
 		if (func == L"close")   return do_close(params);
-		if (func == L"lsi")     return do_list_selected_items(params);
+		if (func == L"lsi")     return do_lsi(params);
 		if (func == L"pwd")     return do_pwd(params);
 		if (func == L"chcp")    return do_chcp(params);
 		if (func == L"env")     return do_env(params);
@@ -163,12 +166,12 @@ int process(int argc, wchar_t* argv[]) {
 		std::wcerr << e.ErrorMessage() << std::endl;
 	}
 	catch (std::runtime_error & e) {
-		unsigned int cp = winapi::get_console_output_codepage();
+		auto cp = winapi::get_console_output_codepage();
 		std::wcerr << winapi::multi2wide(e.what(), cp) << std::endl;
 	}
 	catch (std::exception & e) {
 		std::wcerr << L"An unexpected exception occurred: ";
-		unsigned int cp = winapi::get_console_output_codepage();
+		auto cp = winapi::get_console_output_codepage();
 		std::wcerr << winapi::multi2wide(e.what(), cp) << std::endl;
 	}
 	catch (...) {

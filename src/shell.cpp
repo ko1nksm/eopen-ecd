@@ -126,7 +126,7 @@ namespace ebridge {
 
 	void Shell::Edit(std::wstring path, bool background)
 	{
-		std::wstring editor = util::getenv(L"EOPEN_EDITOR", L"notepad.exe");
+		auto editor = util::getenv(L"EOPEN_EDITOR", L"notepad.exe");
 		path = AccessCheck(NormalizePath(path));
 		auto show = background ? winapi::show::noactive : winapi::show::normal;
 		winapi::execute(editor, path, show);
@@ -165,7 +165,7 @@ namespace ebridge {
 
 		// Explorer Location
 		if (std::regex_match(path, std::wregex(LR"(:|:[\\/].*)"))) {
-			std::wstring wd = GetWorkingDirectory();
+			auto wd = GetWorkingDirectory();
 			if (path.size() > 1) {
 				wd = std::regex_replace(wd, std::wregex(LR"(\\$)"), L"");
 			}

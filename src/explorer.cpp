@@ -60,8 +60,7 @@ namespace ebridge {
 		std::vector<std::wstring> ret;
 		for (long i = 0; i < items->GetCount(); i++) {
 			Shell32::FolderItem2Ptr item(items->Item(i));
-			std::wstring path = (BSTR)item->GetPath();
-			ret.push_back(path);
+			ret.push_back((BSTR)item->GetPath());
 		}
 		return ret;
 	}
