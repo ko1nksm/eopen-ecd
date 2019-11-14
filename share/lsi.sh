@@ -1,24 +1,24 @@
 #shellcheck shell=sh
 
-translate=unix
+unix=1 mixed=''
 
 usage() {
   cat<<HERE
 Usage: elsi [options]
 
 options:
-    -u    Print a Unix path (default)
-    -w    Print a Windows path
-    -m    Print a Windows, with '/' instead of '\'
+    -u, --unix      Print a Unix path (default)
+    -w, --windows   Print a Windows path
+    -m, --mixed     Print a Windows, with '/' instead of '\'
 HERE
 exit
 }
 
 for arg in "$@"; do
   case $arg in
-    -u | --unix) translate=unix ;;
-    -w | --windows) translate=windows ;;
-    -m | --mixed) translate=mixed ;;
+    -u | --unix)    unix=1  mixed='' ;;
+    -w | --windows) unix='' mixed='' ;;
+    -m | --mixed)   unix='' mixed=1  ;;
     -h | --help) usage ;;
   esac
 done
@@ -30,18 +30,12 @@ abort() {
 
 lsi() (
   cd "$EOPEN_ROOT" || exit 1
-  bin/ebridge.exe lsi
+  bin/ebridge.exe lsi "$@"
 )
 
-lsi | while IFS= read -r item; do
-  case $translate in
-    windows) ;;
-    unix) item=$(to_linpath "$item");;
-    mixed)
-      IFS='\'
-      set -- $item
-      IFS='/'
-      item=$*
-  esac
+[ "$mixed" ] && options=m || options=''
+
+lsi "$options" | while IFS= read -r item; do
+  [ "$unix" ] && item=$(to_linpath "$item")
   printf '%s\n' "$item"
 done

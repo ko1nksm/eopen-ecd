@@ -1,24 +1,24 @@
 #shellcheck shell=sh
 
-translate=unix
+unix=1 mixed=''
 
 usage() {
   cat<<HERE
 Usage: ewd [options]
 
 options:
-    -u    Print a Unix path (default)
-    -w    Print a Windows path
-    -m    Print a Windows, with '/' instead of '\'
+    -u, --unix      Print a Unix path (default)
+    -w, --windows   Print a Windows path
+    -m, --mixed     Print a Windows, with '/' instead of '\'
 HERE
 exit
 }
 
 for arg in "$@"; do
   case $arg in
-    -u | --unix) translate=unix ;;
-    -w | --windows) translate=windows ;;
-    -m | --mixed) translate=mixed ;;
+    -u | --unix)    unix=1  mixed='' ;;
+    -w | --windows) unix='' mixed='' ;;
+    -m | --mixed)   unix='' mixed=1  ;;
     -h | --help) usage ;;
   esac
 done
@@ -28,32 +28,23 @@ abort() {
   exit 1
 }
 
+[ "$mixed" ] && options=m || options=''
+
 ewd=$(
   cd "$EOPEN_ROOT" || exit 1
-  bin/ebridge.exe pwd
+  bin/ebridge.exe pwd auto "$options"
 ) || abort
 
-case $translate in
-  unix)
-    case $ewd in ([A-Za-z]:* | \\\\*)
-      if dest=$(to_linpath "$ewd") 2>/dev/null; then
-        printf '%s\n' "$dest"
-        exit 0
-      fi
-    esac
-    ;;
-  mixed)
-    IFS='\'
-    set -- $ewd
-    IFS='/'
-    ewd=$*
-    printf '%s\n' "$ewd"
-    exit 0
-    ;;
-  windows)
-    printf '%s\n' "$ewd"
-    exit 0
-    ;;
-esac
+if [ "$unix" ]; then
+  case $ewd in ([A-Za-z]:* | \\\\*)
+    if dest=$(to_linpath "$ewd") 2>/dev/null; then
+      printf '%s\n' "$dest"
+      exit 0
+    fi
+  esac
+else
+  printf '%s\n' "$ewd"
+  exit 0
+fi
 
 abort "Unsupported path '$ewd'"
