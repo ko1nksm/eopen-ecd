@@ -1,6 +1,6 @@
 #shellcheck shell=sh
 
-unix=1 mixed=''
+unix=1 mixed='' delimiter='\n'
 
 usage() {
   cat<<HERE
@@ -10,6 +10,7 @@ options:
     -u, --unix      Print a Unix path (default)
     -w, --windows   Print a Windows path
     -m, --mixed     Print a Windows, with '/' instead of '\'
+    -0, --null      items are separated by a null, not whitespace
 HERE
 exit
 }
@@ -19,6 +20,7 @@ for arg in "$@"; do
     -u | --unix)    unix=1  mixed='' ;;
     -w | --windows) unix='' mixed='' ;;
     -m | --mixed)   unix='' mixed=1  ;;
+    -0 | --null) delimiter='\0' ;;
     -h | --help) usage ;;
   esac
 done
@@ -33,9 +35,12 @@ lsi() (
   bin/ebridge.exe lsi "$@"
 )
 
+CR=$(printf '\r')
+
 [ "$mixed" ] && options=m || options=''
 
 lsi "$options" | while IFS= read -r item; do
+  item=${item%"$CR"}
   [ "$unix" ] && item=$(to_linpath "$item")
-  printf '%s\n' "$item"
+  printf "%s$delimiter" "$item"
 done
