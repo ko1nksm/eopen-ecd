@@ -24,7 +24,9 @@ function build($plartform) {
     "init.ps1"
     "init.sh"
     "cmd"
+    "cygwin"
     "pwsh"
+    "share"
     "wsl"
   )
 

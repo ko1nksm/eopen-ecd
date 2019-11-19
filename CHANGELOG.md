@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+## 0.10.2 - 2019-11-19
+### Fixed
+- Added missing file to the distribution package
+
 ## 0.10.1 - 2019-11-15
 ### Added
 - Added `-0`, option for `elsi`
