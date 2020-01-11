@@ -191,6 +191,16 @@ namespace winapi {
 		return path;
 	}
 
+	std::wstring urlescape(std::wstring uri) {
+		DWORD length = INTERNET_MAX_URL_LENGTH;
+		WCHAR escaped[INTERNET_MAX_URL_LENGTH];
+		DWORD flags = URL_ESCAPE_PERCENT | URL_ESCAPE_SEGMENT_ONLY;
+		if (::UrlEscape(uri.c_str(), escaped, &length, flags) != S_OK) {
+			return L"";
+		}
+		return escaped;
+	}
+
 	unsigned int get_console_output_codepage()
 	{
 		return ::GetConsoleOutputCP();

@@ -50,6 +50,7 @@ namespace winapi {
 
 	std::wstring uri2path(std::wstring uri);
 	std::wstring path2uri(std::wstring uri);
+	std::wstring urlescape(std::wstring uri);
 
 	unsigned int get_console_output_codepage();
 	unsigned int set_console_output_codepage(unsigned int codepage);

@@ -4,11 +4,12 @@ set -eu
 
 usage() {
   cat <<'HERE'
-Usage: eopen [options] [file | directory | uri]
+Usage: eopen [options] [file | directory | uri | keywords]
 
 options:
   -e, --editor      Open the file in text editor. Set the editor path to
                       EOPEN_EDITOR environment variable on Windows.
+  -s, --search      Search keywords in browser.
   -n, --new         Open the specified directory in new instance of explorer.
 HERE
 if [ "$ENABLE_SUDO" ]; then
@@ -60,7 +61,7 @@ check_edit_path() {
   [ -e "$1" ] || [ -d "$(dirname "$1")" ]
 }
 
-EDITOR='' NEW='' SUDO='' FLAGS=''
+EDITOR='' SEARCH='' NEW='' SUDO='' FLAGS=''
 
 ENABLE_SUDO=''
 if type sudo > /dev/null 2>&1; then
@@ -71,6 +72,7 @@ unknown() { abort "unrecognized option '$1'";  }
 for arg; do
   case $arg in
     -e | --editor    ) EDITOR=1 ;;
+    -s | --search    ) SEARCH=1 ;;
     -n | --new       ) NEW=1 ;;
          --sudo      ) [ "$ENABLE_SUDO" ] || unknown "$@"; SUDO=1 ;;
     -g | --background) FLAGS="${FLAGS}b" ;;
@@ -83,6 +85,12 @@ for arg; do
 done
 
 set -- "${1:-}"
+
+if [ "$SEARCH" ]; then
+  printf '\033]0;%s\a' "eopen: $$"
+  ebridge search "$1" "$FLAGS" "eopen: $$"
+  exit
+fi
 
 if [ "$SUDO" ]; then
   is_linux_path "$1" || abort "'$1' is not linux path"

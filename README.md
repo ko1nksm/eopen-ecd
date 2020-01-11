@@ -35,7 +35,7 @@ PowerShell / Command Prompt. Use `explorer.exe` instead.
 
 ### eopen
 
-`Usage: eopen [ -e | --editor ] [ -n | --new ] [ --sudo ] [ -g | --background ] [ -v | --version ] [ -h | --help ]`
+`Usage: eopen [ -e | --editor ] [ -s | --search ] [ -n | --new ] [ --sudo ] [ -g | --background ] [ -v | --version ] [ -h | --help ]`
 
 * Open the directory with Explorer from the Terminal.
 * Open the file with application from the Terminal.
@@ -61,6 +61,9 @@ eopen -e --sudo /etc/hosts
 # Opens with Windows default browser
 eopen http://google.com
 
+# Search with Windows default browser
+eopen -s "eopen-ecd"
+
 # Open files and directories under Windows
 eopen C:/Windows
 
@@ -79,10 +82,11 @@ eopen :/workspace               # Relative path from current Explorer location
 
 #### Environemnt variables
 
-| name              | description                             | default          |
-| ----------------- | --------------------------------------- | ---------------- |
-| `EOPEN_EDITOR`    | Execution path of editor for `eopen -e` | `notepad.exe`    |
-| `EOPEN_LAUNCH_TO` | Default location for new explorer       | Windows settings |
+| name              | description                             | default                              |
+| ----------------- | --------------------------------------- | ------------------------------------ |
+| `EOPEN_EDITOR`    | Execution path of editor for `eopen -e` | `notepad.exe`                        |
+| `EOPEN_SEARCH`    | Search engine for `eopen -s`            | `https://www.google.com/search?q=%s` |
+| `EOPEN_LAUNCH_TO` | Default location for new explorer       | Windows settings                     |
 
 **Note** Set environment variables on Windows (not in WSL).
 
