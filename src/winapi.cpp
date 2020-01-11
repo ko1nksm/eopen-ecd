@@ -34,6 +34,7 @@ namespace winapi {
 		case show::noactive: show = SW_SHOWNOACTIVATE; break;
 		}
 
+		parameters = L"\"" + parameters + L"\"";
 		SHELLEXECUTEINFO sei = { 0 };
 		sei.cbSize = sizeof(SHELLEXECUTEINFO);
 		sei.lpVerb = L"open";
