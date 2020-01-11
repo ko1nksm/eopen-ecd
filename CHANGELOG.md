@@ -1,7 +1,11 @@
 # Changelog
 
 ## Unreleased
-## 0.10.3 - 2020-01-12
+## 0.11.0 - 2020-01-12
+### Added
+- eopen: Added `--search` option to search in browser
+
+## 0.10.3 - 2020-01-11
 ### Fixed
 - Fixed an issue when opening URL containing query string
 
