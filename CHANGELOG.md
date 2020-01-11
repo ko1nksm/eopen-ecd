@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+## 0.10.3 - 2020-01-12
+### Fixed
+- Fixed an issue when opening URL containing query string
+
 ## 0.10.2 - 2019-11-19
 ### Fixed
 - Added missing file to the distribution package
