@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+## 0.12.0 - 2020-01-13
+### Changed
+- eopen: Use `-S` or `--web-search` for web search instead of `-s`, `--search`
+### Added
+- eopen: Add support for windows explorer search (`-s`, `--search`)
+
 ## 0.11.0 - 2020-01-12
 ### Added
 - eopen: Added `--search` option to search in browser

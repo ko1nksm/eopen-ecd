@@ -35,7 +35,10 @@ PowerShell / Command Prompt. Use `explorer.exe` instead.
 
 ### eopen
 
-`Usage: eopen [ -e | --editor ] [ -s | --search ] [ -S | --web-search ] [ -n | --new ] [ --sudo ] [ -g | --background ] [ -v | --version ] [ -h | --help ]`
+```
+Usage: eopen [ -e | --editor ] [ -n | --new ] [ --sudo ] [ -g | --background ]
+             [ -s | --search ] [ -S | --web-search ]  [ -v | --version ] [ -h | --help ]
+```
 
 * Open the directory with Explorer from the Terminal.
 * Open the file with application from the Terminal.
