@@ -132,6 +132,19 @@ namespace ebridge {
 		winapi::execute(editor, path, show);
 	}
 
+	void Shell::Search(std::wstring query, std::wstring location, std::vector<std::wstring> crumbs, bool background)
+	{
+		auto show = background ? winapi::show::noactive : winapi::show::normal;
+		if (!std::filesystem::is_directory(location)) {
+			throw winapi::win32_error_directory_not_found();
+		}
+		query = L"search-ms:query=" + winapi::urlescape(query) + L"&crumb=location:" + location;
+		for (const auto& crumb : crumbs) {
+			query += L"&crumb=" + winapi::urlescape(crumb);
+		}
+		winapi::execute(L"explorer.exe", query, show);
+	}
+
 	void Shell::WebSearch(std::wstring keywords, bool background)
 	{
 		auto search = util::getenv(L"EOPEN_SEARCH", L"https://www.google.com/search?q=%s");

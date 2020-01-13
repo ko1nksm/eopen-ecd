@@ -24,6 +24,7 @@ namespace winapi {
 		return ret;
 	}
 	win32_error_path_not_found::win32_error_path_not_found() : win32_error(ERROR_PATH_NOT_FOUND) { }
+	win32_error_directory_not_found::win32_error_directory_not_found() : win32_error(ERROR_DIRECTORY) { }
 	win32_error_invalid_function::win32_error_invalid_function() : win32_error(ERROR_INVALID_FUNCTION) { }
 	win32_error_invalid_parameter::win32_error_invalid_parameter() : win32_error(ERROR_INVALID_PARAMETER) { }
 

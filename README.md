@@ -35,7 +35,7 @@ PowerShell / Command Prompt. Use `explorer.exe` instead.
 
 ### eopen
 
-`Usage: eopen [ -e | --editor ] [ -s | --search ] [ -n | --new ] [ --sudo ] [ -g | --background ] [ -v | --version ] [ -h | --help ]`
+`Usage: eopen [ -e | --editor ] [ -s | --search ] [ -S | --web-search ] [ -n | --new ] [ --sudo ] [ -g | --background ] [ -v | --version ] [ -h | --help ]`
 
 * Open the directory with Explorer from the Terminal.
 * Open the file with application from the Terminal.
@@ -61,8 +61,11 @@ eopen -e --sudo /etc/hosts
 # Opens with Windows default browser
 eopen http://google.com
 
+# Search with Windows explorer
+eopen -s "*.conf" /etc/ "size:>1KB"
+
 # Search with Windows default browser
-eopen -s "eopen-ecd"
+eopen -S "eopen-ecd"
 
 # Open files and directories under Windows
 eopen C:/Windows

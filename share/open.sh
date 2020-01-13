@@ -53,6 +53,12 @@ is_linux_path() {
   esac
 }
 
+is_crumb() {
+  case $1 in ([a-zA-Z]:*) return 1; esac # Windows path
+  case $1 in (*:*) return 0; esac
+  return 1
+}
+
 check_path() {
   [ -e "$1" ]
 }
@@ -61,7 +67,7 @@ check_edit_path() {
   [ -e "$1" ] || [ -d "$(dirname "$1")" ]
 }
 
-EDITOR='' WEB_SEARCH='' NEW='' SUDO='' FLAGS=''
+EDITOR='' WEB='' SEARCH='' SEARCH='' NEW='' SUDO='' FLAGS=''
 
 ENABLE_SUDO=''
 if type sudo > /dev/null 2>&1; then
@@ -71,26 +77,39 @@ fi
 unknown() { abort "unrecognized option '$1'";  }
 for arg; do
   case $arg in
-    -e | --editor    ) EDITOR=1 ;;
-    -S | --web-search) WEB_SEARCH=1 ;;
-    -n | --new       ) NEW=1 ;;
-         --sudo      ) [ "$ENABLE_SUDO" ] || unknown "$@"; SUDO=1 ;;
-    -g | --background) FLAGS="${FLAGS}b" ;;
-    -v | --version   ) ebridge version; exit ;;
-    -h | --help      ) usage ;;
+    -e | --editor     ) EDITOR=1 ;;
+    -s | --search     ) SEARCH=1 WEB='' ;;
+    -S | --web-search ) SEARCH=1 WEB=1  ;;
+    -n | --new        ) NEW=1 ;;
+         --sudo       ) [ "$ENABLE_SUDO" ] || unknown "$@"; SUDO=1 ;;
+    -g | --background ) FLAGS="${FLAGS}b" ;;
+    -v | --version    ) ebridge version; exit ;;
+    -h | --help       ) usage ;;
     -?*) unknown "$@" ;;
     *) set -- "$@" "$arg"
   esac
   shift
 done
 
-set -- "${1:-}"
-
-if [ "$WEB_SEARCH" ]; then
-  printf '\033]0;%s\a' "eopen: $$"
-  ebridge web-search "$1" "$FLAGS" "eopen: $$"
+if [ "$SEARCH" ]; then
+  if [ "$WEB" ]; then
+    ebridge web-search "${1:-}" "$FLAGS" "$@"
+  else
+    query=${1:-}
+    [ $# -gt 0 ] && shift
+    location=$(to_winpath ./)
+    for crumb; do
+      shift
+      is_crumb "$crumb" && set -- "$@" "$crumb" && continue
+      location="$crumb"
+      is_linux_path "$location" && location=$(to_winpath "$location")
+    done
+    ebridge search "$query" "$FLAGS" "$location" "$@"
+  fi
   exit
 fi
+
+set -- "${1:-}"
 
 if [ "$SUDO" ]; then
   is_linux_path "$1" || abort "'$1' is not linux path"

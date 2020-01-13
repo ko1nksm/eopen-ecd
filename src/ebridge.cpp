@@ -51,6 +51,18 @@ int do_edit(std::vector<std::wstring> params) {
 	return 0;
 }
 
+int do_search(std::vector<std::wstring> params) {
+	auto query = params.size() >= 1 ? params[0] : L"";
+	auto flags = params.size() >= 2 ? params[1] : L"";
+	auto location = params.size() >= 3 ? params[2] : L"";
+	std::vector<std::wstring> crumbs(params.begin() + 3, params.end());
+
+	Shell shell;
+	bool background = util::exists_flag(flags, L"b");
+	shell.Search(query, location, crumbs, background);
+	return 0;
+}
+
 int do_websearch(std::vector<std::wstring> params) {
 	auto keywords = params.size() >= 1 ? params[0] : L"";
 	auto flags = params.size() >= 2 ? params[1] : L"";
@@ -158,6 +170,7 @@ int process(int argc, wchar_t* argv[]) {
 		if (func == L"open")		return do_open(params);
 		if (func == L"new")			return do_new(params);
 		if (func == L"edit")		return do_edit(params);
+		if (func == L"search")		return do_search(params);
 		if (func == L"web-search")	return do_websearch(params);
 		if (func == L"close")		return do_close(params);
 		if (func == L"lsi")			return do_lsi(params);

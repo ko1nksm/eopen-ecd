@@ -20,6 +20,12 @@ namespace winapi {
 		win32_error_path_not_found();
 	};
 
+	class win32_error_directory_not_found : public win32_error
+	{
+	public:
+		win32_error_directory_not_found();
+	};
+
 	class win32_error_invalid_function : public win32_error
 	{
 	public:
