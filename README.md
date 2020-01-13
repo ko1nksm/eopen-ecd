@@ -92,7 +92,7 @@ eopen :/workspace               # Relative path from current Explorer location
 | name              | description                             | default                              |
 | ----------------- | --------------------------------------- | ------------------------------------ |
 | `EOPEN_EDITOR`    | Execution path of editor for `eopen -e` | `notepad.exe`                        |
-| `EOPEN_SEARCH`    | Search engine for `eopen -s`            | `https://www.google.com/search?q=%s` |
+| `EOPEN_SEARCH`    | URL template for web search             | `https://www.google.com/search?q=%s` |
 | `EOPEN_LAUNCH_TO` | Default location for new explorer       | Windows settings                     |
 
 **Note** Set environment variables on Windows (not in WSL).
