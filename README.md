@@ -63,6 +63,7 @@ eopen http://google.com
 
 # Search with Windows explorer
 eopen -s "*.conf" /etc/ "size:>1KB"
+# Note: The query depends on the locale. e.g. 'サイズ:>1KB' in Japanese.
 
 # Search with Windows default browser
 eopen -S "eopen-ecd"
