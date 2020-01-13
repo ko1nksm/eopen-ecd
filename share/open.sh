@@ -9,7 +9,7 @@ Usage: eopen [options] [file | directory | uri | keywords]
 options:
   -e, --editor      Open the file in text editor. Set the editor path to
                       EOPEN_EDITOR environment variable on Windows.
-  -s, --search      Search keywords in browser.
+  -S, --web-search  Web search, open in browser.
   -n, --new         Open the specified directory in new instance of explorer.
 HERE
 if [ "$ENABLE_SUDO" ]; then
@@ -61,7 +61,7 @@ check_edit_path() {
   [ -e "$1" ] || [ -d "$(dirname "$1")" ]
 }
 
-EDITOR='' SEARCH='' NEW='' SUDO='' FLAGS=''
+EDITOR='' WEB_SEARCH='' NEW='' SUDO='' FLAGS=''
 
 ENABLE_SUDO=''
 if type sudo > /dev/null 2>&1; then
@@ -72,7 +72,7 @@ unknown() { abort "unrecognized option '$1'";  }
 for arg; do
   case $arg in
     -e | --editor    ) EDITOR=1 ;;
-    -s | --search    ) SEARCH=1 ;;
+    -S | --web-search) WEB_SEARCH=1 ;;
     -n | --new       ) NEW=1 ;;
          --sudo      ) [ "$ENABLE_SUDO" ] || unknown "$@"; SUDO=1 ;;
     -g | --background) FLAGS="${FLAGS}b" ;;
@@ -86,9 +86,9 @@ done
 
 set -- "${1:-}"
 
-if [ "$SEARCH" ]; then
+if [ "$WEB_SEARCH" ]; then
   printf '\033]0;%s\a' "eopen: $$"
-  ebridge search "$1" "$FLAGS" "eopen: $$"
+  ebridge web-search "$1" "$FLAGS" "eopen: $$"
   exit
 fi
 

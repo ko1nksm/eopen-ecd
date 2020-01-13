@@ -132,7 +132,7 @@ namespace ebridge {
 		winapi::execute(editor, path, show);
 	}
 
-	void Shell::Search(std::wstring keywords, bool background)
+	void Shell::WebSearch(std::wstring keywords, bool background)
 	{
 		auto search = util::getenv(L"EOPEN_SEARCH", L"https://www.google.com/search?q=%s");
 		auto show = background ? winapi::show::noactive : winapi::show::normal;

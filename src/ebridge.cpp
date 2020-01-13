@@ -51,13 +51,13 @@ int do_edit(std::vector<std::wstring> params) {
 	return 0;
 }
 
-int do_search(std::vector<std::wstring> params) {
+int do_websearch(std::vector<std::wstring> params) {
 	auto keywords = params.size() >= 1 ? params[0] : L"";
 	auto flags = params.size() >= 2 ? params[1] : L"";
 
 	Shell shell;
 	bool background = util::exists_flag(flags, L"b");
-	shell.Search(keywords, background);
+	shell.WebSearch(keywords, background);
 	return 0;
 }
 
@@ -155,16 +155,16 @@ int process(int argc, wchar_t* argv[]) {
 			params.push_back(argv[i]);
 		}
 
-		if (func == L"open")    return do_open(params);
-		if (func == L"new")     return do_new(params);
-		if (func == L"edit")    return do_edit(params);
-		if (func == L"search")  return do_search(params);
-		if (func == L"close")   return do_close(params);
-		if (func == L"lsi")     return do_lsi(params);
-		if (func == L"pwd")     return do_pwd(params);
-		if (func == L"chcp")    return do_chcp(params);
-		if (func == L"env")     return do_env(params);
-		if (func == L"version") return do_version();
+		if (func == L"open")		return do_open(params);
+		if (func == L"new")			return do_new(params);
+		if (func == L"edit")		return do_edit(params);
+		if (func == L"web-search")	return do_websearch(params);
+		if (func == L"close")		return do_close(params);
+		if (func == L"lsi")			return do_lsi(params);
+		if (func == L"pwd")			return do_pwd(params);
+		if (func == L"chcp")		return do_chcp(params);
+		if (func == L"env")			return do_env(params);
+		if (func == L"version")		return do_version();
 		throw winapi::win32_error_invalid_function();
 	}
 	catch (winapi::win32_error & e) {
